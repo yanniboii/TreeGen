@@ -24,6 +24,8 @@ public class TreeGenerator : MonoBehaviour
     public float rootThiccness = 1f;
     public float cylinderHeight = 2f;
     public float angularOffset = 2f;
+
+    public bool useFlatShading;
     // Start is called before the first frame update
     void Start()
     {
@@ -56,17 +58,28 @@ public class TreeGenerator : MonoBehaviour
         float angularStep = 2f * Mathf.PI / (float)(faces);
         for (int j = 0; j < faces; ++j)
         {
+            bool plusJ = false;
             Vector3 pos = new Vector3(Mathf.Cos(j * angularStep + angularOffset), 0f, Mathf.Sin(j * angularStep + angularOffset)) + GetRandomVec3();
             pos *= thiccness;
             if((Random.Range(0f,1f)*100) < rootChance)
             {
-                vertices[j] = pos * rootThiccness;
+                Vector3 pos2 = new Vector3(Mathf.Cos(j+1 * angularStep + angularOffset), 0f, Mathf.Sin(j+1 * angularStep + angularOffset)) + GetRandomVec3();
+                Vector3 thickness1 = pos * rootThiccness;
+                Vector3 thickness2 = pos2 * rootThiccness;
+
+                vertices[j] = thickness1;
+                vertices[j+1] = thickness2;
+                plusJ = true;
             }
             else
             {
                 vertices[j] = (pos);
             }
             uvs[j] = new Vector2(j * angularStep, uvs[j].y);
+            if(plusJ)
+            {
+                j++;
+            }
         }
 
 
@@ -137,11 +150,32 @@ public class TreeGenerator : MonoBehaviour
 
             }
         }
+        if (useFlatShading)
+        {
+            Vector3[] flatShadedVertices = new Vector3[triangles.Length];
+            Vector2[] flatShadedUvs = new Vector2[triangles.Length];
+
+            for (int i = 0; i < triangles.Length; i++)
+            {
+                flatShadedVertices[i] = vertices[triangles[i]];
+                flatShadedUvs[i] = uvs[triangles[i]];
+                triangles[i] = i;
+            }
+
+            vertices = flatShadedVertices;
+            uvs = flatShadedUvs;
+            mesh.RecalculateNormals();
+        }
 
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.uv = uvs;
         return mesh;
+    }
+
+    void FlatShading(int[] triangles, Vector3[] vertices, Vector2[] uvs)
+    {
+
     }
 
     // Update is called once per frame
