@@ -9,6 +9,21 @@ public class TreeGenerator : MonoBehaviour
 
 
     public int faces = 4;
+    public int floors = 3;
+    public float thiccness = 1f;
+    [Header("Random")]
+    public float randomness = 1f;
+    public float randomnessScale = 1f;
+    public float randomnessX = 1f;
+    public float randomnessY = 1f;
+    public float randomnessZ = 1f;
+
+    [Header("Root Amount")]
+    public float rootChance = 1f;
+
+    public float rootThiccness = 1f;
+    public float cylinderHeight = 2f;
+    public float angularOffset = 2f;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,11 +40,34 @@ public class TreeGenerator : MonoBehaviour
 
     }
 
+    Vector3 GetRandomVec3()
+    {
+        Vector3 random = new Vector3(Random.Range(-randomnessX,randomnessX), Random.Range(-randomnessY, randomnessY), Random.Range(-randomnessZ, randomnessZ));
+
+        return random / randomnessScale;
+    }
+
     void GenerateTree()
     {
-        Vector3[] vertices = new Vector3[faces * 2];
+        Vector3[] vertices = new Vector3[faces];
         int[] triangles = new int[faces * 6];
         Vector2[] uvs = new Vector2[vertices.Length];
+
+        float angularStep = 2f * Mathf.PI / (float)(faces);
+        for (int j = 0; j < faces; ++j)
+        {
+            Vector3 pos = new Vector3(Mathf.Cos(j * angularStep + angularOffset), 0f, Mathf.Sin(j * angularStep + angularOffset)) + GetRandomVec3();
+            pos *= thiccness;
+            if((Random.Range(0f,1f)*100) < rootChance)
+            {
+                vertices[j] = pos * rootThiccness;
+            }
+            else
+            {
+                vertices[j] = (pos);
+            }
+            uvs[j] = new Vector2(j * angularStep, uvs[j].y);
+        }
 
 
         GameObject tree = new GameObject("tree");
@@ -56,7 +94,7 @@ public class TreeGenerator : MonoBehaviour
     {
         Mesh mesh = new Mesh();
 
-        Vector3[] vertices = new Vector3[faces*2];
+        Vector3[] vertices = new Vector3[faces*floors];
         Vector2[] uvs = new Vector2[(vertices.Length)];
 
         for (int i = 0; i < _vertices.Length; i++)
@@ -68,8 +106,6 @@ public class TreeGenerator : MonoBehaviour
         int[] triangles = new int[6 * (vertices.Length - faces)];
 
         Vector3 startingPos = new Vector3();
-        float angularOffset = 2f;
-
 
         float angularStep = 2f * Mathf.PI / (float)(faces);
         Vector3 first = new Vector3(Mathf.Cos(angularOffset), 0f, Mathf.Sin(angularOffset));
@@ -78,19 +114,17 @@ public class TreeGenerator : MonoBehaviour
 
         Vector3 lastPivot =startingPos;
         for (int i = 1; i < vertices.Length / faces; i++)
-        {
-            Vector3 pivot = lastPivot + Vector3.up * 2f;
-            float yPos = (float)i / (vertices.Length / faces - 1) * 2f;
-
+        { 
+            Vector3 pivot = lastPivot + cylinderHeight * Vector3.up;
+            lastPivot = pivot;
             for (int j = 0; j < faces; j++)
             {
                 float x = Mathf.Cos(j * angularStep + angularOffset);
                 float z = Mathf.Sin(j * angularStep + angularOffset);
 
-                Vector3 pos = new Vector3(x, 0f, z);
-                Vector3 pos2 = new Vector3(x,yPos, z);
-                vertices[i * faces + j] = pos;
-                vertices[i*faces] = pos2;
+                Vector3 pos = new Vector3(x, 0f, z) + GetRandomVec3();
+                pos *= thiccness;
+                vertices[i * faces + j] = pos+pivot;
                 Debug.Log("ASD");
                 uvs[i * faces + j] = new Vector2(j * angularStep, vertices[i * faces + j].y);
 
