@@ -63,12 +63,10 @@ public class TreeGenerator : MonoBehaviour
             pos *= thiccness;
             if((Random.Range(0f,1f)*100) < rootChance)
             {
-                Vector3 pos2 = new Vector3(Mathf.Cos(j+1 * angularStep + angularOffset), 0f, Mathf.Sin(j+1 * angularStep + angularOffset)) + GetRandomVec3();
                 Vector3 thickness1 = pos * rootThiccness;
-                Vector3 thickness2 = pos2 * rootThiccness;
 
                 vertices[j] = thickness1;
-                vertices[j+1] = thickness2;
+                vertices[j+1] = thickness1;
                 plusJ = true;
             }
             else
@@ -173,10 +171,34 @@ public class TreeGenerator : MonoBehaviour
         return mesh;
     }
 
-    void FlatShading(int[] triangles, Vector3[] vertices, Vector2[] uvs)
+    Mesh GeneratePineLeaves()
     {
+        Mesh mesh = new Mesh();
 
+        Vector3[] vertices = new Vector3[faces + 2];
+        Vector2[] uvs = new Vector2[vertices.Length];
+        int[] triangles = new int[faces*3];
+
+        vertices[0] = new Vector3();
+
+        for(int i = 0; i < vertices.Length; i++)
+        {
+            for(int j = 0; j < faces; j++)
+            {
+                triangles[3 * ((i - 1) * faces + j)] = 0;
+                triangles[3 * ((i - 1) * faces + j)+1] = 0;//change this number
+                triangles[3 * ((i - 1) * faces + j)+2] = 0;//change this number
+                triangles[3 * ((i - 1) * faces + j)+3] = 0;
+                triangles[3 * ((i - 1) * faces + j)+4] = 0;//change this number
+                triangles[3 * ((i - 1) * faces + j)+5] = 0;//change this number
+
+            }
+        }
+
+
+        return mesh;
     }
+    
 
     // Update is called once per frame
     void Update()

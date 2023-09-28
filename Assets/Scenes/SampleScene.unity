@@ -184,17 +184,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: d9fe2f2cefdabab4b81761575c164f34, type: 2}
-  faces: 55
-  floors: 3
+  faces: 134
+  floors: 25
   thiccness: 1
   randomness: 1.93
   randomnessScale: 28.11
   randomnessX: 0.36
   randomnessY: 0.11
   randomnessZ: 1.35
-  rootChance: 9.18
+  rootChance: 20.98
   rootThiccness: 2
-  cylinderHeight: 1.15
+  cylinderHeight: 0.41
   angularOffset: 187.01
   useFlatShading: 1
 --- !u!1 &705507993
