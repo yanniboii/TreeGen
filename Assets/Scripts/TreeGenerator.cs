@@ -11,6 +11,12 @@ public class TreeGenerator : MonoBehaviour
     public int faces = 4;
     public int floors = 3;
     public float thiccness = 1f;
+    public float cylinderHeight = 2f;
+    public float angularOffset = 2f;
+    public float growDir = 1f;
+    [Range(0.9f,1f)]
+    public float reductionRate = 1f;
+
     [Header("Random")]
     public float randomness = 1f;
     public float randomnessScale = 1f;
@@ -18,14 +24,10 @@ public class TreeGenerator : MonoBehaviour
     public float randomnessY = 1f;
     public float randomnessZ = 1f;
 
-    [Header("Root Amount")]
+    [Header("Root")]
     public float rootChance = 1f;
-
     public float rootThiccness = 1f;
-    public float cylinderHeight = 2f;
-    public float angularOffset = 2f;
 
-    public bool useFlatShading;
     // Start is called before the first frame update
     void Start()
     {
@@ -44,7 +46,7 @@ public class TreeGenerator : MonoBehaviour
 
     Vector3 GetRandomVec3()
     {
-        Vector3 random = new Vector3(Random.Range(-randomnessX,randomnessX), Random.Range(-randomnessY, randomnessY), Random.Range(-randomnessZ, randomnessZ));
+        Vector3 random = new Vector3(Random.Range(-randomnessX, randomnessX), Random.Range(-randomnessY, randomnessY), Random.Range(-randomnessZ, randomnessZ));
 
         return random / randomnessScale;
     }
@@ -61,20 +63,23 @@ public class TreeGenerator : MonoBehaviour
             bool plusJ = false;
             Vector3 pos = new Vector3(Mathf.Cos(j * angularStep + angularOffset), 0f, Mathf.Sin(j * angularStep + angularOffset)) + GetRandomVec3();
             pos *= thiccness;
-            if((Random.Range(0f,1f)*100) < rootChance)
+            if ((Random.Range(0f, 1f) * 100) < rootChance)
             {
                 Vector3 thickness1 = pos * rootThiccness;
+                if(j < faces + 1)
+                {
+                    vertices[j] = thickness1;
+                    vertices[j + 1] = thickness1;
+                    plusJ = true;
+                }
 
-                vertices[j] = thickness1;
-                vertices[j+1] = thickness1;
-                plusJ = true;
             }
             else
             {
                 vertices[j] = (pos);
             }
             uvs[j] = new Vector2(j * angularStep, uvs[j].y);
-            if(plusJ)
+            if (plusJ)
             {
                 j++;
             }
@@ -86,11 +91,19 @@ public class TreeGenerator : MonoBehaviour
         tree.transform.position = new Vector3(0, 5, 0);
 
         Mesh mesh = GenerateLayer(tree, vertices, triangles, uvs);
-        MeshRenderer quadRenderer = tree.AddComponent<MeshRenderer>();
+        MeshRenderer meshRenderer = tree.AddComponent<MeshRenderer>();
         MeshFilter meshFilter = tree.AddComponent<MeshFilter>();
         meshFilter.mesh = mesh;
-        quadRenderer.sharedMaterial = material;
+        meshRenderer.sharedMaterial = material;
+        this.GetComponent<MeshCombiner>().meshFilters.Add(meshFilter);
+        this.GetComponent<MeshCombiner>().meshRenderers.Add(meshRenderer);
+    }
 
+    Mesh GenerateInsideMesh()
+    {
+        Mesh mesh = new Mesh();
+
+        return mesh;
     }
 
     Vector3 ChangeCoordinates(Vector3 input, Vector3 inputNormal, Vector3 newNormal)
@@ -105,7 +118,7 @@ public class TreeGenerator : MonoBehaviour
     {
         Mesh mesh = new Mesh();
 
-        Vector3[] vertices = new Vector3[faces*floors];
+        Vector3[] vertices = new Vector3[faces * floors];
         Vector2[] uvs = new Vector2[(vertices.Length)];
 
         for (int i = 0; i < _vertices.Length; i++)
@@ -123,9 +136,9 @@ public class TreeGenerator : MonoBehaviour
         first = ChangeCoordinates(first, Vector3.up, Vector3.up);
         first += startingPos;
 
-        Vector3 lastPivot =startingPos;
+        Vector3 lastPivot = startingPos;
         for (int i = 1; i < vertices.Length / faces; i++)
-        { 
+        {
             Vector3 pivot = lastPivot + cylinderHeight * Vector3.up;
             lastPivot = pivot;
             for (int j = 0; j < faces; j++)
@@ -135,11 +148,11 @@ public class TreeGenerator : MonoBehaviour
 
                 Vector3 pos = new Vector3(x, 0f, z) + GetRandomVec3();
                 pos *= thiccness;
-                vertices[i * faces + j] = pos+pivot;
+                vertices[i * faces + j] = pos + pivot;
                 Debug.Log("ASD");
                 uvs[i * faces + j] = new Vector2(j * angularStep, vertices[i * faces + j].y);
 
-                triangles[6 * ((i - 1) * faces + j)]     = (i - 1) * faces + j;
+                triangles[6 * ((i - 1) * faces + j)] = (i - 1) * faces + j;
                 triangles[6 * ((i - 1) * faces + j) + 1] = (i) * faces + j;
                 triangles[6 * ((i - 1) * faces + j) + 2] = (i - 1) * faces + (j + 1) % faces;
                 triangles[6 * ((i - 1) * faces + j) + 3] = (i - 1) * faces + (j + 1) % faces;
@@ -147,22 +160,8 @@ public class TreeGenerator : MonoBehaviour
                 triangles[6 * ((i - 1) * faces + j) + 5] = (i) * faces + (j + 1) % faces;
 
             }
-        }
-        if (useFlatShading)
-        {
-            Vector3[] flatShadedVertices = new Vector3[triangles.Length];
-            Vector2[] flatShadedUvs = new Vector2[triangles.Length];
+            thiccness *= reductionRate;
 
-            for (int i = 0; i < triangles.Length; i++)
-            {
-                flatShadedVertices[i] = vertices[triangles[i]];
-                flatShadedUvs[i] = uvs[triangles[i]];
-                triangles[i] = i;
-            }
-
-            vertices = flatShadedVertices;
-            uvs = flatShadedUvs;
-            mesh.RecalculateNormals();
         }
 
         mesh.vertices = vertices;
@@ -177,20 +176,20 @@ public class TreeGenerator : MonoBehaviour
 
         Vector3[] vertices = new Vector3[faces + 2];
         Vector2[] uvs = new Vector2[vertices.Length];
-        int[] triangles = new int[faces*3];
+        int[] triangles = new int[faces * 3];
 
         vertices[0] = new Vector3();
 
-        for(int i = 0; i < vertices.Length; i++)
+        for (int i = 0; i < vertices.Length; i++)
         {
-            for(int j = 0; j < faces; j++)
+            for (int j = 0; j < faces; j++)
             {
                 triangles[3 * ((i - 1) * faces + j)] = 0;
-                triangles[3 * ((i - 1) * faces + j)+1] = 0;//change this number
-                triangles[3 * ((i - 1) * faces + j)+2] = 0;//change this number
-                triangles[3 * ((i - 1) * faces + j)+3] = 0;
-                triangles[3 * ((i - 1) * faces + j)+4] = 0;//change this number
-                triangles[3 * ((i - 1) * faces + j)+5] = 0;//change this number
+                triangles[3 * ((i - 1) * faces + j) + 1] = 0;//change this number
+                triangles[3 * ((i - 1) * faces + j) + 2] = 0;//change this number
+                triangles[3 * ((i - 1) * faces + j) + 3] = 0;
+                triangles[3 * ((i - 1) * faces + j) + 4] = 0;//change this number
+                triangles[3 * ((i - 1) * faces + j) + 5] = 0;//change this number
 
             }
         }
@@ -198,7 +197,7 @@ public class TreeGenerator : MonoBehaviour
 
         return mesh;
     }
-    
+
 
     // Update is called once per frame
     void Update()
