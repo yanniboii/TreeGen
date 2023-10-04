@@ -66,7 +66,7 @@ public class TreeGenerator : MonoBehaviour
             if ((Random.Range(0f, 1f) * 100) < rootChance)
             {
                 Vector3 thickness1 = pos * rootThiccness;
-                if(j < faces + 1)
+                if(j < faces - 1)
                 {
                     vertices[j] = thickness1;
                     vertices[j + 1] = thickness1;
@@ -149,7 +149,6 @@ public class TreeGenerator : MonoBehaviour
                 Vector3 pos = new Vector3(x, 0f, z) + GetRandomVec3();
                 pos *= thiccness;
                 vertices[i * faces + j] = pos + pivot;
-                Debug.Log("ASD");
                 uvs[i * faces + j] = new Vector2(j * angularStep, vertices[i * faces + j].y);
 
                 triangles[6 * ((i - 1) * faces + j)] = (i - 1) * faces + j;
