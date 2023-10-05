@@ -6,14 +6,15 @@ using UnityEngine;
 public class TreeGenerator : MonoBehaviour
 {
     [SerializeField] Material material;
+    [SerializeField] PentagonalDodecahedronGenerator pentagonalDodecahedronGenerator;
 
 
+    [Header("Sizes")]
     public int faces = 4;
     public int floors = 3;
-    public float thiccness = 1f;
     public float cylinderHeight = 2f;
-    public float angularOffset = 2f;
-    public float growDir = 1f;
+    public float thiccness = 1f;
+    public float leaveSize = 1f;
     [Range(0.9f,1f)]
     public float reductionRate = 1f;
 
@@ -27,6 +28,10 @@ public class TreeGenerator : MonoBehaviour
     [Header("Root")]
     public float rootChance = 1f;
     public float rootThiccness = 1f;
+
+    [Header("Idk yet")]
+    public float angularOffset = 2f;
+    public float growDir = 1f;
 
     // Start is called before the first frame update
     void Start()
@@ -136,8 +141,10 @@ public class TreeGenerator : MonoBehaviour
         first = ChangeCoordinates(first, Vector3.up, Vector3.up);
         first += startingPos;
 
+        float currentReduction = thiccness;
+
         Vector3 lastPivot = startingPos;
-        for (int i = 1; i < vertices.Length / faces; i++)
+        for (int i = 1; i < floors; i++)
         {
             Vector3 pivot = lastPivot + cylinderHeight * Vector3.up;
             lastPivot = pivot;
@@ -159,8 +166,14 @@ public class TreeGenerator : MonoBehaviour
                 triangles[6 * ((i - 1) * faces + j) + 5] = (i) * faces + (j + 1) % faces;
 
             }
-            thiccness *= reductionRate;
-
+            currentReduction *= reductionRate;
+            thiccness = currentReduction;
+            if(i == floors-1)
+            {
+                GameObject PentagonalDodecahedron = new GameObject("PentagonalDodecahedron");
+                pentagonalDodecahedronGenerator.radius = currentReduction * leaveSize;
+                pentagonalDodecahedronGenerator.GeneratePentagonalDodecahedron(PentagonalDodecahedron, _tree, pivot);
+            }
         }
 
         mesh.vertices = vertices;

@@ -188,13 +188,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: 310221fd9058b6f4eae35ae4d9348076, type: 2}
+  pentagonalDodecahedronGenerator: {fileID: 509652302}
   faces: 134
-  floors: 25
-  thiccness: 1
+  floors: 449
   cylinderHeight: 0.41
-  angularOffset: 187.01
-  growDir: 1
-  reductionRate: 0.982
+  thiccness: 27.76
+  leaveSize: 3.08
+  reductionRate: 0.9968
   randomness: 1.93
   randomnessScale: 28.11
   randomnessX: 0.36
@@ -202,6 +202,8 @@ MonoBehaviour:
   randomnessZ: 1.35
   rootChance: 20.98
   rootThiccness: 2
+  angularOffset: 187.01
+  growDir: 1
 --- !u!33 &509652299
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -282,7 +284,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ad7623604745f344868730414ef6e4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 1
+  radius: 2
   material: {fileID: 2100000, guid: 68b4de66af026db4c9eab9eded3ae1bc, type: 2}
   gameObejct: {fileID: 1015452092}
 --- !u!1 &705507993

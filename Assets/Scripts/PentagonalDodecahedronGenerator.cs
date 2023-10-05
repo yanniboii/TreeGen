@@ -11,15 +11,15 @@ public class PentagonalDodecahedronGenerator : MonoBehaviour
     void Start()
     {
 
-        GameObject PentagonalDodecahedron = new GameObject("PentagonalDodecahedron");
 
 
-        GeneratePentagonalDodecahedron(PentagonalDodecahedron);
     }
 
 
-    void GeneratePentagonalDodecahedron(GameObject PentagonalDodecahedron)
+    public void GeneratePentagonalDodecahedron(GameObject PentagonalDodecahedron, GameObject parent, Vector3 pos)
     {
+        PentagonalDodecahedron.transform.position = pos;
+        PentagonalDodecahedron.transform.SetParent(parent.transform, false);
         MeshFilter meshFilter = PentagonalDodecahedron.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = PentagonalDodecahedron.AddComponent<MeshRenderer>();
         Mesh mesh = new Mesh();
@@ -30,28 +30,28 @@ public class PentagonalDodecahedronGenerator : MonoBehaviour
         int[] triangles = new int[36];
 
         // Dodecahedron vertex positions
-        float phi = (1f + Mathf.Sqrt(5f)) / 2f;
+        float phi = ((1f + Mathf.Sqrt(5f)) / 2f);
 
-        vertices[0] = new Vector3(-1, -1, -1);
-        vertices[1] = new Vector3(1, -1, -1);
-        vertices[2] = new Vector3(1, -1, 1);
-        vertices[3] = new Vector3(-1, -1, 1);
-        vertices[4] = new Vector3(-1, 1, -1);
-        vertices[5] = new Vector3(1, 1, -1);
-        vertices[6] = new Vector3(1, 1, 1);
-        vertices[7] = new Vector3(-1, 1, 1);
-        vertices[8] = new Vector3(0, -1 / phi, -phi);
-        vertices[9] = new Vector3(0, 1 / phi, -phi);
-        vertices[10] = new Vector3(0, -1 / phi, phi);
-        vertices[11] = new Vector3(0, 1 / phi, phi);
-        vertices[12] = new Vector3(-phi, 0, -1 / phi);
-        vertices[13] = new Vector3(phi, 0, -1 / phi);
-        vertices[14] = new Vector3(-phi, 0, 1 / phi);
-        vertices[15] = new Vector3(phi, 0, 1 / phi);
-        vertices[16] = new Vector3(-1 / phi, -phi, 0);
-        vertices[17] = new Vector3(1 / phi, -phi, 0);
-        vertices[18] = new Vector3(-1 / phi, phi, 0);
-        vertices[19] = new Vector3(1 / phi, phi, 0);
+        vertices[0] = new Vector3(-radius, -radius, -radius);
+        vertices[1] = new Vector3(radius, -radius, -radius);
+        vertices[2] = new Vector3(radius, -radius, radius);
+        vertices[3] = new Vector3(-radius, -radius, radius);
+        vertices[4] = new Vector3(-radius, radius, -radius);
+        vertices[5] = new Vector3(radius, radius, -radius);
+        vertices[6] = new Vector3(radius, radius, radius);
+        vertices[7] = new Vector3(-radius, radius, radius);
+        vertices[8] = new Vector3(0, -radius / phi, -phi*radius);
+        vertices[9] = new Vector3(0, radius / phi, -phi*radius);
+        vertices[10] = new Vector3(0, -radius / phi, phi*radius);
+        vertices[11] = new Vector3(0, radius / phi, phi * radius);
+        vertices[12] = new Vector3(-phi * radius, 0, -radius / phi);
+        vertices[13] = new Vector3(phi * radius, 0, -radius / phi);
+        vertices[14] = new Vector3(-phi * radius, 0, radius / phi);
+        vertices[15] = new Vector3(phi * radius, 0, radius / phi);
+        vertices[16] = new Vector3(-radius / phi, -phi * radius, 0);
+        vertices[17] = new Vector3(radius / phi, -phi * radius, 0);
+        vertices[18] = new Vector3(-radius / phi, phi * radius, 0);
+        vertices[19] = new Vector3(radius / phi, phi * radius, 0);
 
         for (int i = 0; i < vertices.Length; i++)
         {
