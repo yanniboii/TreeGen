@@ -33,10 +33,10 @@ public class TreeGenerator : MonoBehaviour
     public float angularOffset = 2f;
     public float growDir = 1f;
 
+
     // Start is called before the first frame update
     void Start()
     {
-        GenerateTree();
     }
 
     void AddVertex()
@@ -56,7 +56,7 @@ public class TreeGenerator : MonoBehaviour
         return random / randomnessScale;
     }
 
-    void GenerateTree()
+    public void GenerateTree(GameObject tree, Vector3 startPos)
     {
         Vector3[] vertices = new Vector3[faces];
         int[] triangles = new int[faces * 6];
@@ -91,9 +91,7 @@ public class TreeGenerator : MonoBehaviour
         }
 
 
-        GameObject tree = new GameObject("tree");
-
-        tree.transform.position = new Vector3(0, 5, 0);
+        tree.transform.position = startPos;
 
         Mesh mesh = GenerateLayer(tree, vertices, triangles, uvs);
         MeshRenderer meshRenderer = tree.AddComponent<MeshRenderer>();
