@@ -56,7 +56,7 @@ public class TreeGenerator : MonoBehaviour
         return random / randomnessScale;
     }
 
-    public void GenerateTree(GameObject tree, Vector3 startPos)
+    public void GenerateTree(GameObject tree, Vector3 startPos, Quaternion startRot)
     {
         Vector3[] vertices = new Vector3[faces];
         int[] triangles = new int[faces * 6];
@@ -92,6 +92,7 @@ public class TreeGenerator : MonoBehaviour
 
 
         tree.transform.position = startPos;
+        tree.transform.rotation = startRot;
 
         Mesh mesh = GenerateLayer(tree, vertices, triangles, uvs);
         MeshRenderer meshRenderer = tree.AddComponent<MeshRenderer>();
@@ -166,12 +167,12 @@ public class TreeGenerator : MonoBehaviour
             }
             currentReduction *= reductionRate;
             thiccness = currentReduction;
-            if(i == floors-1)
-            {
-                GameObject PentagonalDodecahedron = new GameObject("PentagonalDodecahedron");
-                pentagonalDodecahedronGenerator.radius = currentReduction * leaveSize;
-                pentagonalDodecahedronGenerator.GeneratePentagonalDodecahedron(PentagonalDodecahedron, _tree, pivot);
-            }
+            //if(i == floors-1)
+            //{
+            //    GameObject PentagonalDodecahedron = new GameObject("PentagonalDodecahedron");
+            //    pentagonalDodecahedronGenerator.radius = currentReduction * leaveSize;
+            //    pentagonalDodecahedronGenerator.GeneratePentagonalDodecahedron(PentagonalDodecahedron, _tree, pivot);
+            //}
         }
 
         mesh.vertices = vertices;

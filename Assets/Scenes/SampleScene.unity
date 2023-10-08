@@ -302,9 +302,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   axiom: A
   recursion: 3
-  letter: 4100
+  letter: 410058005300
   rule:
-  - FF<A
+  - F[<F[>+F]][>F]A
+  - F
+  - FF
 --- !u!1 &514634808
 GameObject:
   m_ObjectHideFlags: 0

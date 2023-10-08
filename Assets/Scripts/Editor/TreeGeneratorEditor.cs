@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Unity.VisualScripting;
 
 [CustomEditor(typeof(TreeGenerator))]
 public class TreeGeneratorEditor : Editor
@@ -9,6 +10,14 @@ public class TreeGeneratorEditor : Editor
     private string[] tabs = { "Values", "L-System rules" };
 
     private int tabIndex = 0;
+
+
+
+    private void OnEnable()
+    {
+
+
+    }
     public override void OnInspectorGUI()
     {
         EditorGUILayout.BeginVertical();
@@ -53,12 +62,10 @@ public class TreeGeneratorEditor : Editor
     }
     private void LSystemRules()
     {
-        TreeGenerator treeGenerator = (TreeGenerator)target;
-        LSystems lSystems = FindObjectOfType<LSystems>();
+        LSystems lSystems = target.GetComponent<LSystems>();
+
         lSystems.axiom = EditorGUILayout.TextField("Axiom", lSystems.axiom);
         lSystems.recursion = EditorGUILayout.IntField("Recursion", lSystems.recursion);
-        EditorGUILayout.BeginVertical();
-        var 
-        lSystems.letter = EditorGUILayout.ObjectField()
+
     }
 }

@@ -11,12 +11,7 @@ public class TransformInfo
     public Quaternion rotation;
 }
 
-public class Rules
-{
-    public char letter;
-    public string rule;
-}
-
+[System.Serializable]
 public class LSystems : MonoBehaviour
 {
     [SerializeField] public string axiom;
@@ -60,7 +55,7 @@ public class LSystems : MonoBehaviour
             }
         }
         currentString = stringBuilder.ToString();
-
+        Debug.Log(currentString);
         foreach (char c in currentString)
         {
             switch (c)
@@ -70,33 +65,42 @@ public class LSystems : MonoBehaviour
                     break;
                 case 'F':
                     Vector3 initialPos = transform.position;
+                    Quaternion initialRotation = transform.rotation;
                     transform.Translate(Vector3.up * ((treeGenerator.cylinderHeight * treeGenerator.floors) - treeGenerator.cylinderHeight));
                     GameObject tree = new GameObject("tree");
-                    treeGenerator.GenerateTree(tree, initialPos);
+                    treeGenerator.GenerateTree(tree, initialPos, initialRotation);
                     break;
                 case 'X':
                     break;
                 case '[':
+                    transformStack.Push(new TransformInfo()
+                    {
+                        position = transform.position,
+                        rotation= transform.rotation
+                    });
                     break;
                 case ']':
+                    TransformInfo ti = transformStack.Pop();
+                    transform.position = ti.position;
+                    transform.rotation = ti.rotation;
                     break;
                 case '>':
-                    transform.Rotate(Vector3.right);
+                    transform.Rotate(Vector3.right * 30);
                     break;
                 case '<':
-                    transform.Rotate(Vector3.left);
+                    transform.Rotate(Vector3.left*30);
                     break;
                 case '+':
-                    transform.Rotate(Vector3.up);
+                    transform.Rotate(Vector3.up * 30);
                     break;
                 case '-':
-                    transform.Rotate(Vector3.down);
+                    transform.Rotate(Vector3.down * 30);
                     break;
                 case '^':
-                    transform.Rotate(Vector3.forward);
+                    transform.Rotate(Vector3.forward * 30);
                     break;
                 case '~':
-                    transform.Rotate(Vector3.back);
+                    transform.Rotate(Vector3.back * 30);
                     break;
             }
         }
