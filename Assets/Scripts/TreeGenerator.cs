@@ -120,6 +120,7 @@ public class TreeGenerator : MonoBehaviour
 
     Mesh GenerateLayer(GameObject _tree, Vector3[] _vertices, int[] _triangles, Vector2[] _uvs)
     {
+        float _thiccness = thiccness;
         Mesh mesh = new Mesh();
 
         Vector3[] vertices = new Vector3[faces * floors];
@@ -140,7 +141,7 @@ public class TreeGenerator : MonoBehaviour
         first = ChangeCoordinates(first, Vector3.up, Vector3.up);
         first += startingPos;
 
-        float currentReduction = thiccness;
+        float currentReduction = _thiccness;
 
         Vector3 lastPivot = startingPos;
         for (int i = 1; i < floors; i++)
@@ -153,7 +154,7 @@ public class TreeGenerator : MonoBehaviour
                 float z = Mathf.Sin(j * angularStep + angularOffset);
 
                 Vector3 pos = new Vector3(x, 0f, z) + GetRandomVec3();
-                pos *= thiccness;
+                pos *= _thiccness;
                 vertices[i * faces + j] = pos + pivot;
                 uvs[i * faces + j] = new Vector2(j * angularStep, vertices[i * faces + j].y);
 
@@ -166,7 +167,7 @@ public class TreeGenerator : MonoBehaviour
 
             }
             currentReduction *= reductionRate;
-            thiccness = currentReduction;
+            _thiccness = currentReduction;
             //if(i == floors-1)
             //{
             //    GameObject PentagonalDodecahedron = new GameObject("PentagonalDodecahedron");

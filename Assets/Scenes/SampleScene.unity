@@ -190,12 +190,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: 310221fd9058b6f4eae35ae4d9348076, type: 2}
   pentagonalDodecahedronGenerator: {fileID: 509652302}
-  faces: 134
-  floors: 174
-  cylinderHeight: 0.41
+  faces: 4
+  floors: 10
+  cylinderHeight: 0.34
   thiccness: 1
   leaveSize: 20.08
-  reductionRate: 1
+  reductionRate: 0.9992
   randomness: 1.93
   randomnessScale: 28.11
   randomnessX: 0.36
@@ -301,12 +301,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   axiom: A
-  recursion: 3
-  letter: 410058005300
+  recursion: 7
+  angle: 40
+  letter: 41004600
   rule:
-  - F[<F[>+F]][>F]A
+  - F[+AL]F[>AL]<AL
   - F
-  - FF
 --- !u!1 &514634808
 GameObject:
   m_ObjectHideFlags: 0

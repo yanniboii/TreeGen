@@ -16,6 +16,8 @@ public class LSystems : MonoBehaviour
 {
     [SerializeField] public string axiom;
     [SerializeField] public int recursion = 1;
+    [SerializeField] float angle = 20;
+    [SerializeField] int treeAmount;
 
     private Stack<TransformInfo> transformStack;
     [SerializeField] public List<char> letter;
@@ -24,6 +26,7 @@ public class LSystems : MonoBehaviour
     private string currentString = string.Empty;
 
     TreeGenerator treeGenerator;
+    PentagonalDodecahedronGenerator pentagonalDodecahedronGenerator;
     // Start is called before the first frame update
     void Start()
     {
@@ -37,24 +40,45 @@ public class LSystems : MonoBehaviour
             .ToDictionary(item => item.Letter, item => item.Rule);
 
         treeGenerator = FindObjectOfType<TreeGenerator>();
-        Generate();
+        pentagonalDodecahedronGenerator = FindObjectOfType<PentagonalDodecahedronGenerator>();
+        spawntrees();
     }
 
-    void Generate()
+    void spawntrees()
+    {
+        int offset = 50;
+        for(int i = 0; i< treeAmount; i++)
+        {
+            offset += 50;
+            Generate(new Vector3(offset, 0, 0));
+
+        }
+    }
+    void Generate(Vector3 offset)
     {
         currentString = axiom;
 
-        StringBuilder stringBuilder = new StringBuilder();
+        transform.position = offset;
 
         for (int i = 0; i < recursion; i++)
         {
 
+            StringBuilder stringBuilder = new StringBuilder();
+
             foreach (char c in currentString)
             {
-                stringBuilder.Append(rules.ContainsKey(c) ? rules[c] : c.ToString());
+                if (rules.ContainsKey(c))
+                {
+                    stringBuilder.Append(rules[c]);
+                }
+                else
+                {
+                    stringBuilder.Append(c);
+                }
             }
+            currentString = stringBuilder.ToString();
+
         }
-        currentString = stringBuilder.ToString();
         Debug.Log(currentString);
         foreach (char c in currentString)
         {
@@ -70,7 +94,11 @@ public class LSystems : MonoBehaviour
                     GameObject tree = new GameObject("tree");
                     treeGenerator.GenerateTree(tree, initialPos, initialRotation);
                     break;
-                case 'X':
+                case 'L':
+                    Vector3 initialPoss = transform.position;
+                    transform.Translate(Vector3.up * ((treeGenerator.cylinderHeight * treeGenerator.floors) - treeGenerator.cylinderHeight));
+                    GameObject leave = new GameObject("leave");
+                    pentagonalDodecahedronGenerator.GeneratePentagonalDodecahedron(leave, initialPoss);
                     break;
                 case '[':
                     transformStack.Push(new TransformInfo()
@@ -85,23 +113,18 @@ public class LSystems : MonoBehaviour
                     transform.rotation = ti.rotation;
                     break;
                 case '>':
-                    transform.Rotate(Vector3.right * 30);
+                    transform.Rotate(Vector3.right * Random.Range(-angle,angle));
                     break;
                 case '<':
-                    transform.Rotate(Vector3.left*30);
+                    transform.Rotate(Vector3.left* Random.Range(-angle, angle));
                     break;
                 case '+':
-                    transform.Rotate(Vector3.up * 30);
+                    transform.Rotate(Vector3.forward * Random.Range(-angle, angle));
                     break;
                 case '-':
-                    transform.Rotate(Vector3.down * 30);
+                    transform.Rotate(Vector3.forward * Random.Range(-angle, angle));
                     break;
-                case '^':
-                    transform.Rotate(Vector3.forward * 30);
-                    break;
-                case '~':
-                    transform.Rotate(Vector3.back * 30);
-                    break;
+
             }
         }
     }

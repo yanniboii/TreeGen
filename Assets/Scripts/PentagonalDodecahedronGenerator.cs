@@ -16,10 +16,10 @@ public class PentagonalDodecahedronGenerator : MonoBehaviour
     }
 
 
-    public void GeneratePentagonalDodecahedron(GameObject PentagonalDodecahedron, GameObject parent, Vector3 pos)
+    public void GeneratePentagonalDodecahedron(GameObject PentagonalDodecahedron, Vector3 pos)
     {
         PentagonalDodecahedron.transform.position = pos;
-        PentagonalDodecahedron.transform.SetParent(parent.transform, false);
+        //PentagonalDodecahedron.transform.SetParent(parent.transform, false);
         MeshFilter meshFilter = PentagonalDodecahedron.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = PentagonalDodecahedron.AddComponent<MeshRenderer>();
         Mesh mesh = new Mesh();
