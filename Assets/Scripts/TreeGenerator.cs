@@ -32,6 +32,7 @@ public class TreeGenerator : MonoBehaviour
     [Header("Idk yet")]
     public float angularOffset = 2f;
     public float growDir = 1f;
+    [SerializeField]public Gradient gradient;
 
 
     // Start is called before the first frame update
@@ -98,6 +99,8 @@ public class TreeGenerator : MonoBehaviour
         MeshRenderer meshRenderer = tree.AddComponent<MeshRenderer>();
         MeshFilter meshFilter = tree.AddComponent<MeshFilter>();
         meshFilter.mesh = mesh;
+
+        material.color = gradient.Evaluate(Random.Range(0f,1f));
         meshRenderer.sharedMaterial = material;
         this.GetComponent<MeshCombiner>().meshFilters.Add(meshFilter);
         this.GetComponent<MeshCombiner>().meshRenderers.Add(meshRenderer);

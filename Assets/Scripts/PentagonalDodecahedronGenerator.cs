@@ -53,12 +53,12 @@ public class PentagonalDodecahedronGenerator : MonoBehaviour
         vertices[18] = new Vector3(-radius / phi, phi * radius, 0);
         vertices[19] = new Vector3(radius / phi, phi * radius, 0);
 
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            GameObject cube =Instantiate(gameObejct, vertices[i], Quaternion.identity, gameObject.transform);
-            cube.name = "cube" + i;
-            cube.SetActive(false);
-        }
+        //for (int i = 0; i < vertices.Length; i++)
+        //{
+        //    GameObject cube =Instantiate(gameObejct, vertices[i], Quaternion.identity, gameObject.transform);
+        //    cube.name = "cube" + i;
+        //    cube.SetActive(false);
+        //}
 
         // Dodecahedron triangle indices
         triangles = new int[108];

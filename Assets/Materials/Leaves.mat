@@ -80,7 +80,7 @@ Material:
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DitherSize: 1.13
+    - _DitherSize: 0
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -96,8 +96,8 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Albedo_Color: {r: 0.16353686, g: 0.7075472, b: 0.1932297, a: 0}
+    - _Albedo_Color: {r: 0.071155205, g: 0.3679245, b: 0.08620875, a: 0}
     - _Color: {r: 0.2899243, g: 0.9245283, b: 0.23985407, a: 1}
-    - _Emission: {r: 0.20392157, g: 0.81960785, b: 0.05490196, a: 0}
+    - _Emission: {r: 0.06434442, g: 0.3301887, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

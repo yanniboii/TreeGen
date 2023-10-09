@@ -46,11 +46,12 @@ public class LSystems : MonoBehaviour
 
     void spawntrees()
     {
-        int offset = 50;
-        for(int i = 0; i< treeAmount; i++)
+        for(int offsetX = 0; offsetX < 1250; offsetX+= 50)
         {
-            offset += 50;
-            Generate(new Vector3(offset, 0, 0));
+            for(int offsetY = 0;  offsetY < 1250; offsetY+= 50)
+            { 
+                Generate(new Vector3(offsetX, 0, offsetY));
+            }
 
         }
     }
@@ -59,6 +60,7 @@ public class LSystems : MonoBehaviour
         currentString = axiom;
 
         transform.position = offset;
+        transform.rotation = new Quaternion(0, 0, 0, 0);
 
         for (int i = 0; i < recursion; i++)
         {

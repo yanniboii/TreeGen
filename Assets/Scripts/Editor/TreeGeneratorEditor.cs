@@ -57,6 +57,7 @@ public class TreeGeneratorEditor : Editor
 
         treeGenerator.angularOffset = EditorGUILayout.FloatField("angularOffset", treeGenerator.angularOffset);
         treeGenerator.growDir = EditorGUILayout.FloatField("growDir", treeGenerator.growDir);
+        treeGenerator.gradient = EditorGUILayout.GradientField("Gradient", treeGenerator.gradient);
 
 
     }
