@@ -23,9 +23,16 @@ public class PentagonalDodecahedronGenerator : MonoBehaviour
         PentagonalDodecahedron.GetComponent<MeshFilter>().mesh = mesh;
         Vector3[] vertices = new Vector3[20];
         int[] triangles = new int[36];
+        Vector2[] uvs = new Vector2[20];
 
         // Dodecahedron vertex positions
         float phi = ((1f + Mathf.Sqrt(5f)) / 2f);
+
+        for(int i = 0; i < vertices.Length; i++)
+        {
+            uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
+
+        }
 
         vertices[0] = new Vector3(-radius, -radius, -radius);
         vertices[1] = new Vector3(radius, -radius, -radius);
@@ -119,6 +126,7 @@ public class PentagonalDodecahedronGenerator : MonoBehaviour
         triangles[105] = 10; triangles[106] = 6; triangles[107] = 11;
 
         mesh.vertices = vertices;
+        mesh.uv = uvs;
         mesh.triangles = triangles;
 
         // Recalculate normals to improve lighting

@@ -46,9 +46,9 @@ public class LSystems : MonoBehaviour
 
     void spawntrees()
     {
-        for (int offsetX = 0; offsetX < 1250; offsetX += 50)
+        for (int offsetX = 0; offsetX < 1500; offsetX += 50)
         {
-            for (int offsetY = 0; offsetY < 1250; offsetY += 50)
+            for (int offsetY = 0; offsetY < 1500; offsetY += 50)
             {
                 Generate(new Vector3(offsetX, 0, offsetY));
             }
