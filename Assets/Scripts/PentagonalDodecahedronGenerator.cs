@@ -3,8 +3,6 @@ using UnityEngine;
 public class PentagonalDodecahedronGenerator : MonoBehaviour
 {
     public float radius = 1.0f;
-    MeshFilter meshFilter;
-    MeshRenderer meshRenderer;
     public Material material;
     public GameObject gameObejct;
 
@@ -20,12 +18,9 @@ public class PentagonalDodecahedronGenerator : MonoBehaviour
     {
         PentagonalDodecahedron.transform.position = pos;
         //PentagonalDodecahedron.transform.SetParent(parent.transform, false);
-        MeshFilter meshFilter = PentagonalDodecahedron.AddComponent<MeshFilter>();
-        MeshRenderer meshRenderer = PentagonalDodecahedron.AddComponent<MeshRenderer>();
         Mesh mesh = new Mesh();
 
-        meshFilter.mesh = mesh;
-
+        PentagonalDodecahedron.GetComponent<MeshFilter>().mesh = mesh;
         Vector3[] vertices = new Vector3[20];
         int[] triangles = new int[36];
 
@@ -128,7 +123,7 @@ public class PentagonalDodecahedronGenerator : MonoBehaviour
 
         // Recalculate normals to improve lighting
         mesh.RecalculateNormals();
-        meshRenderer.sharedMaterial = material;
+        PentagonalDodecahedron.GetComponent<MeshRenderer>().sharedMaterial = material;
     }
 
 

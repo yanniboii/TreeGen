@@ -46,10 +46,10 @@ public class LSystems : MonoBehaviour
 
     void spawntrees()
     {
-        for(int offsetX = 0; offsetX < 1250; offsetX+= 50)
+        for (int offsetX = 0; offsetX < 1250; offsetX += 50)
         {
-            for(int offsetY = 0;  offsetY < 1250; offsetY+= 50)
-            { 
+            for (int offsetY = 0; offsetY < 1250; offsetY += 50)
+            {
                 Generate(new Vector3(offsetX, 0, offsetY));
             }
 
@@ -57,14 +57,17 @@ public class LSystems : MonoBehaviour
     }
     void Generate(Vector3 offset)
     {
-        currentString = axiom;
 
-        transform.position = offset;
+        currentString = axiom;
+        GameObject tree = new GameObject("tree");
+        tree.transform.position = offset;
+        tree.AddComponent<MeshRenderer>();
+        tree.AddComponent<MeshFilter>();
+        transform.position = Vector3.zero;
         transform.rotation = new Quaternion(0, 0, 0, 0);
 
         for (int i = 0; i < recursion; i++)
         {
-
             StringBuilder stringBuilder = new StringBuilder();
 
             foreach (char c in currentString)
@@ -79,34 +82,67 @@ public class LSystems : MonoBehaviour
                 }
             }
             currentString = stringBuilder.ToString();
-
         }
         Debug.Log(currentString);
+
+        // Create an array of CombineInstance with the appropriate size
+        List<CombineInstance> branchCombine = new List<CombineInstance>();
+        List<CombineInstance> leafCombine = new List<CombineInstance>();
+        List<GameObject> oldGameObjects = new List<GameObject>();
+
+        Color randomTreeColor = treeGenerator.gradient.Evaluate(Random.Range(0f, 1f));
+
         foreach (char c in currentString)
         {
             switch (c)
             {
-
                 case 'A':
                     break;
                 case 'F':
                     Vector3 initialPos = transform.position;
                     Quaternion initialRotation = transform.rotation;
                     transform.Translate(Vector3.up * ((treeGenerator.cylinderHeight * treeGenerator.floors) - treeGenerator.cylinderHeight));
-                    GameObject tree = new GameObject("tree");
-                    treeGenerator.GenerateTree(tree, initialPos, initialRotation);
+                    GameObject branch = new GameObject("Branch");
+                    branch.AddComponent<MeshFilter>();
+                    branch.AddComponent<MeshRenderer>();
+
+
+                    treeGenerator.GenerateTree(branch, initialPos, initialRotation);
+
+                    CombineInstance branchInstance = new CombineInstance();
+                    branchInstance.mesh = branch.GetComponent<MeshFilter>().sharedMesh;
+                    branchInstance.transform = branch.GetComponent<MeshFilter>().transform.localToWorldMatrix;
+
+                    branchCombine.Add(branchInstance);
+                    oldGameObjects.Add(branch);
+
                     break;
                 case 'L':
                     Vector3 initialPoss = transform.position;
                     transform.Translate(Vector3.up * ((treeGenerator.cylinderHeight * treeGenerator.floors) - treeGenerator.cylinderHeight));
-                    GameObject leave = new GameObject("leave");
+                    GameObject leave = new GameObject("Leaf");
+                    leave.AddComponent<MeshFilter>();
+                    leave.AddComponent<MeshRenderer>();
+                    MeshRenderer leafRenderer = leave.GetComponent<MeshRenderer>();
+
+                    // Set the material for leaves
+                    leafRenderer.sharedMaterial = pentagonalDodecahedronGenerator.material; // Replace with your leaf material
+
                     pentagonalDodecahedronGenerator.GeneratePentagonalDodecahedron(leave, initialPoss);
+
+                    CombineInstance leafInstance = new CombineInstance();
+                    leafInstance.mesh = leave.GetComponent<MeshFilter>().sharedMesh;
+                    leafInstance.transform = leave.GetComponent<MeshFilter>().transform.localToWorldMatrix;
+
+                    leafCombine.Add(leafInstance);
+                    oldGameObjects.Add(leave);
+
                     break;
                 case '[':
                     transformStack.Push(new TransformInfo()
                     {
                         position = transform.position,
-                        rotation= transform.rotation
+                        rotation = transform.rotation
                     });
                     break;
                 case ']':
@@ -115,10 +151,10 @@ public class LSystems : MonoBehaviour
                     transform.rotation = ti.rotation;
                     break;
                 case '>':
-                    transform.Rotate(Vector3.right * Random.Range(-angle,angle));
+                    transform.Rotate(Vector3.right * Random.Range(-angle, angle));
                     break;
                 case '<':
-                    transform.Rotate(Vector3.left* Random.Range(-angle, angle));
+                    transform.Rotate(Vector3.left * Random.Range(-angle, angle));
                     break;
                 case '+':
                     transform.Rotate(Vector3.forward * Random.Range(-angle, angle));
@@ -126,8 +162,44 @@ public class LSystems : MonoBehaviour
                 case '-':
                     transform.Rotate(Vector3.forward * Random.Range(-angle, angle));
                     break;
-
             }
+
         }
+        foreach (var oldGameObject in oldGameObjects)
+        {
+            Destroy(oldGameObject);
+        }
+
+        // Create separate meshes for branches and leaves
+        var branchMesh = new Mesh();
+        branchMesh.CombineMeshes(branchCombine.ToArray());
+
+        var leafMesh = new Mesh();
+        leafMesh.CombineMeshes(leafCombine.ToArray());
+
+        // Assign the branch and leaf meshes to the tree's MeshFilter
+        tree.GetComponent<MeshFilter>().sharedMesh = branchMesh;
+
+        // Set the material for branches
+        tree.GetComponent<MeshRenderer>().sharedMaterial = treeGenerator.material;
+        tree.GetComponent<MeshRenderer>().material.SetColor("_Color", randomTreeColor);
+        tree.GetComponent<MeshRenderer>().material.SetVector("_Vector2", new Vector2(Random.Range(0f,1f),Random.Range(0f,1f)));
+        float randomFloat = Random.Range(0f, 1f);
+        float randomFloat2 = Random.Range(0f, 1f);
+
+        Debug.Log(randomFloat);
+        tree.GetComponent<MeshRenderer>().material.SetFloat("_Float", randomFloat);
+
+        // Optionally, you can create a separate GameObject for leaves if needed
+        GameObject leavesObject = new GameObject("Leaves");
+        leavesObject.transform.position = offset;
+
+        MeshFilter leavesMeshFilter = leavesObject.AddComponent<MeshFilter>();
+        leavesMeshFilter.sharedMesh = leafMesh;
+        MeshRenderer leavesMeshRenderer = leavesObject.AddComponent<MeshRenderer>();
+
+        // Set the material for leaves
+        leavesMeshRenderer.sharedMaterial = pentagonalDodecahedronGenerator.material; // Replace with your leaf material
+        leavesMeshRenderer.material.SetFloat("_Float", randomFloat2);
     }
 }

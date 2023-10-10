@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class TreeGenerator : MonoBehaviour
 {
-    [SerializeField] Material material;
+    [SerializeField]public Material material;
     [SerializeField] PentagonalDodecahedronGenerator pentagonalDodecahedronGenerator;
 
 
@@ -96,14 +96,9 @@ public class TreeGenerator : MonoBehaviour
         tree.transform.rotation = startRot;
 
         Mesh mesh = GenerateLayer(tree, vertices, triangles, uvs);
-        MeshRenderer meshRenderer = tree.AddComponent<MeshRenderer>();
-        MeshFilter meshFilter = tree.AddComponent<MeshFilter>();
-        meshFilter.mesh = mesh;
+        tree.GetComponent<MeshFilter>().mesh = mesh;
 
-        material.color = gradient.Evaluate(Random.Range(0f,1f));
-        meshRenderer.sharedMaterial = material;
-        this.GetComponent<MeshCombiner>().meshFilters.Add(meshFilter);
-        this.GetComponent<MeshCombiner>().meshRenderers.Add(meshRenderer);
+        tree.GetComponent<MeshRenderer>().sharedMaterial = material;
     }
 
     Mesh GenerateInsideMesh()
