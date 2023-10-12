@@ -10,6 +10,7 @@ public class TransformInfo
     public Vector3 position;
     public Quaternion rotation;
     public List<Vector3> startVertices;
+    public Vector3 growDir;
 }
 
 [System.Serializable]
@@ -125,7 +126,7 @@ public class LSystems : MonoBehaviour
                     leave.AddComponent<MeshFilter>();
                     leave.AddComponent<MeshRenderer>();
                     MeshRenderer leafRenderer = leave.GetComponent<MeshRenderer>();
-
+                    
                     // Set the material for leaves
                     leafRenderer.sharedMaterial = pentagonalDodecahedronGenerator.material; // Replace with your leaf material
 
@@ -144,14 +145,20 @@ public class LSystems : MonoBehaviour
                     {
                         position = transform.position,
                         rotation = transform.rotation,
-                        startVertices = branchCombine[branchCombine.Count() - 1].mesh.vertices.ToList(),
-                    });
-             
+                        growDir = Vector3.up
+                    }) ;
+                    Vector3[] vertices = branchCombine[branchCombine.Count() - 1].mesh.vertices;
+                    for(int i = 0; i < treeGenerator.faces; i++)
+                    {
+                        transformStack.Last().startVertices.Add(vertices[vertices.Length - (treeGenerator.faces+i)]);
+                    }
+
                     break;
                 case ']':
                     TransformInfo ti = transformStack.Pop();
                     transform.position = ti.position;
                     transform.rotation = ti.rotation;
+                    
                     break;
                 case '>':
                     transform.Rotate(Vector3.right * Random.Range(-angle, angle));
