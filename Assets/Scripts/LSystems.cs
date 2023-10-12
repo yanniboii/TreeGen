@@ -9,6 +9,7 @@ public class TransformInfo
 {
     public Vector3 position;
     public Quaternion rotation;
+    public List<Vector3> startVertices;
 }
 
 [System.Serializable]
@@ -46,9 +47,9 @@ public class LSystems : MonoBehaviour
 
     void spawntrees()
     {
-        for (int offsetX = 0; offsetX < 1500; offsetX += 50)
+        for (int offsetX = 0; offsetX < 50; offsetX += 50)
         {
-            for (int offsetY = 0; offsetY < 1500; offsetY += 50)
+            for (int offsetY = 0; offsetY < 50; offsetY += 50)
             {
                 Generate(new Vector3(offsetX, 0, offsetY));
             }
@@ -106,8 +107,8 @@ public class LSystems : MonoBehaviour
                     branch.AddComponent<MeshFilter>();
                     branch.AddComponent<MeshRenderer>();
 
-
-                    treeGenerator.GenerateTree(branch, initialPos, initialRotation);
+                    Vector3 growDir = treeGenerator.getRandomVectorInCone(20, Vector3.up);
+                    treeGenerator.GenerateTree(branch, initialPos, initialRotation, growDir);
 
                     CombineInstance branchInstance = new CombineInstance();
                     branchInstance.mesh = branch.GetComponent<MeshFilter>().sharedMesh;
@@ -142,8 +143,10 @@ public class LSystems : MonoBehaviour
                     transformStack.Push(new TransformInfo()
                     {
                         position = transform.position,
-                        rotation = transform.rotation
+                        rotation = transform.rotation,
+                        startVertices = branchCombine[branchCombine.Count() - 1].mesh.vertices.ToList(),
                     });
+             
                     break;
                 case ']':
                     TransformInfo ti = transformStack.Pop();
@@ -183,13 +186,13 @@ public class LSystems : MonoBehaviour
         // Set the material for branches
         tree.GetComponent<MeshRenderer>().sharedMaterial = treeGenerator.material;
         tree.GetComponent<MeshRenderer>().material.SetColor("_Color", randomTreeColor);
-        tree.GetComponent<MeshRenderer>().material.SetVector("_Vector2", new Vector2(Random.Range(0f,1f),Random.Range(0f,1f)));
+        tree.GetComponent<MeshRenderer>().material.SetVector("_Vector2", new Vector2(Random.Range(0f, 1f), Random.Range(0f, 1f)));
         float randomFloat = Random.Range(0f, 1f);
         float randomFloat2 = Random.Range(0f, 1f);
 
         Debug.Log(randomFloat);
         tree.GetComponent<MeshRenderer>().material.SetFloat("_Float", randomFloat);
-
+        //tree.GetComponent<MeshFilter>().sharedMesh = MeshSmoothener.SmoothMesh(tree.GetComponent<MeshFilter>().sharedMesh, 1, MeshSmoothener.Filter.Laplacian);
         // Optionally, you can create a separate GameObject for leaves if needed
         GameObject leavesObject = new GameObject("Leaves");
         leavesObject.transform.position = offset;

@@ -57,7 +57,7 @@ public class TreeGenerator : MonoBehaviour
         return random / randomnessScale;
     }
 
-    public void GenerateTree(GameObject tree, Vector3 startPos, Quaternion startRot)
+    public void GenerateTree(GameObject tree, Vector3 startPos, Quaternion startRot, Vector3 startingDirection)
     {
         Vector3[] vertices = new Vector3[faces];
         int[] triangles = new int[faces * 6];
@@ -95,17 +95,10 @@ public class TreeGenerator : MonoBehaviour
         tree.transform.position = startPos;
         tree.transform.rotation = startRot;
 
-        Mesh mesh = GenerateLayer(tree, vertices, triangles, uvs);
+        Mesh mesh = GenerateLayer(tree, vertices, triangles, uvs, startingDirection);
         tree.GetComponent<MeshFilter>().mesh = mesh;
 
         tree.GetComponent<MeshRenderer>().sharedMaterial = material;
-    }
-
-    Mesh GenerateInsideMesh()
-    {
-        Mesh mesh = new Mesh();
-
-        return mesh;
     }
 
     Vector3 ChangeCoordinates(Vector3 input, Vector3 inputNormal, Vector3 newNormal)
@@ -116,7 +109,12 @@ public class TreeGenerator : MonoBehaviour
         return rot * input;
     }
 
-    Mesh GenerateLayer(GameObject _tree, Vector3[] _vertices, int[] _triangles, Vector2[] _uvs)
+    public Vector3 getRandomVectorInCone(float coneAngularAmplitude, Vector3 direction)
+    {
+        return (new Vector3(Random.Range(-coneAngularAmplitude, coneAngularAmplitude), Random.Range(-coneAngularAmplitude, coneAngularAmplitude), Random.Range(-coneAngularAmplitude, coneAngularAmplitude)) / 100f + direction).normalized;
+    }
+
+    Mesh GenerateLayer(GameObject _tree, Vector3[] _vertices, int[] _triangles, Vector2[] _uvs, Vector3 startingDirection)
     {
         float _thiccness = thiccness;
         Mesh mesh = new Mesh();
@@ -141,10 +139,12 @@ public class TreeGenerator : MonoBehaviour
 
         float currentReduction = _thiccness;
 
+        Vector3 growDirection = startingDirection;
+
         Vector3 lastPivot = startingPos;
         for (int i = 1; i < floors; i++)
         {
-            Vector3 pivot = lastPivot + cylinderHeight * Vector3.up;
+            Vector3 pivot = lastPivot + cylinderHeight * growDirection;
             lastPivot = pivot;
             for (int j = 0; j < faces; j++)
             {
@@ -153,6 +153,7 @@ public class TreeGenerator : MonoBehaviour
 
                 Vector3 pos = new Vector3(x, 0f, z) + GetRandomVec3();
                 pos *= _thiccness;
+                pos = ChangeCoordinates(pos, new Vector3(0f, 1f, 0f), growDirection);
                 vertices[i * faces + j] = pos + pivot;
                 uvs[i * faces + j] = new Vector2(j * angularStep, vertices[i * faces + j].y);
 
@@ -164,6 +165,7 @@ public class TreeGenerator : MonoBehaviour
                 triangles[6 * ((i - 1) * faces + j) + 5] = (i) * faces + (j + 1) % faces;
 
             }
+            growDirection = getRandomVectorInCone(20, growDirection);
             currentReduction *= reductionRate;
             _thiccness = currentReduction;
             //if(i == floors-1)
