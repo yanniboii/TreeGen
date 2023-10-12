@@ -57,7 +57,7 @@ public class TreeGenerator : MonoBehaviour
         return random / randomnessScale;
     }
 
-    public void GenerateTree(GameObject tree, Vector3 startPos, Quaternion startRot, Vector3 startingDirection)
+    public void GenerateTree(GameObject tree, Vector3 startPos, Quaternion startRot, Vector3 startingDirection, out Vector3 growDir)
     {
         Vector3[] vertices = new Vector3[faces];
         int[] triangles = new int[faces * 6];
@@ -94,8 +94,8 @@ public class TreeGenerator : MonoBehaviour
 
         tree.transform.position = startPos;
         tree.transform.rotation = startRot;
-
-        Mesh mesh = GenerateLayer(tree, vertices, triangles, uvs, startingDirection);
+        
+        Mesh mesh = GenerateLayer(tree, vertices, triangles, uvs, startingDirection, out growDir);
         tree.GetComponent<MeshFilter>().mesh = mesh;
 
         tree.GetComponent<MeshRenderer>().sharedMaterial = material;
@@ -117,7 +117,7 @@ public class TreeGenerator : MonoBehaviour
         return (new Vector3(x, y, z) / 100f + direction).normalized;
     }
 
-    Mesh GenerateLayer(GameObject _tree, Vector3[] _vertices, int[] _triangles, Vector2[] _uvs, Vector3 startingDirection)
+    Mesh GenerateLayer(GameObject _tree, Vector3[] _vertices, int[] _triangles, Vector2[] _uvs, Vector3 startingDirection, out Vector3 growDirection)
     {
         float _thiccness = thiccness;
         Mesh mesh = new Mesh();
@@ -142,7 +142,7 @@ public class TreeGenerator : MonoBehaviour
 
         float currentReduction = _thiccness;
 
-        Vector3 growDirection = startingDirection;
+        growDirection = startingDirection;
 
         Vector3 lastPivot = startingPos;
         for (int i = 1; i < floors; i++)

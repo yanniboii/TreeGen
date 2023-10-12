@@ -11,6 +11,7 @@ public class TransformInfo
     public Quaternion rotation;
     public List<Vector3> startVertices;
     public Vector3 growDir;
+    public Vector3 pivot;
 }
 
 [System.Serializable]
@@ -109,7 +110,7 @@ public class LSystems : MonoBehaviour
                     branch.AddComponent<MeshRenderer>();
 
                     Vector3 growDir = treeGenerator.getRandomVectorInCone(20, Vector3.up);
-                    treeGenerator.GenerateTree(branch, initialPos, initialRotation, growDir);
+                   // treeGenerator.GenerateTree(branch, initialPos, initialRotation, growDir);
 
                     CombineInstance branchInstance = new CombineInstance();
                     branchInstance.mesh = branch.GetComponent<MeshFilter>().sharedMesh;
