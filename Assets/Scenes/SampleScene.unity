@@ -192,8 +192,8 @@ MonoBehaviour:
   pentagonalDodecahedronGenerator: {fileID: 509652302}
   faces: 20
   floors: 10
-  cylinderHeight: 0.34
-  thiccness: 0.15
+  cylinderHeight: 0.45
+  thiccness: 0.36
   leaveSize: 20.08
   reductionRate: 0.9995
   randomness: 1.93
@@ -314,7 +314,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ad7623604745f344868730414ef6e4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 0.88
+  radius: 1.31
   material: {fileID: 2100000, guid: f2d4ac41d86989a4791806d4dba82e2f, type: 2}
   gameObejct: {fileID: 1015452092}
 --- !u!114 &509652303
@@ -335,7 +335,7 @@ MonoBehaviour:
   treeAmount: 300
   letter: 41004600
   rule:
-  - F[+AL]F[>AL]<A
+  - F[+A]F[>AL]<A
   - F
 --- !u!1 &705507993
 GameObject:

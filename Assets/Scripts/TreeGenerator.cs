@@ -111,7 +111,10 @@ public class TreeGenerator : MonoBehaviour
 
     public Vector3 getRandomVectorInCone(float coneAngularAmplitude, Vector3 direction)
     {
-        return (new Vector3(Random.Range(-coneAngularAmplitude, coneAngularAmplitude), Random.Range(-coneAngularAmplitude, coneAngularAmplitude), Random.Range(-coneAngularAmplitude, coneAngularAmplitude)) / 100f + direction).normalized;
+        float x = Random.Range(-coneAngularAmplitude, coneAngularAmplitude);
+        float y = Random.Range(-coneAngularAmplitude, coneAngularAmplitude);
+        float z = Random.Range(-coneAngularAmplitude, coneAngularAmplitude);
+        return (new Vector3(x, y, z) / 100f + direction).normalized;
     }
 
     Mesh GenerateLayer(GameObject _tree, Vector3[] _vertices, int[] _triangles, Vector2[] _uvs, Vector3 startingDirection)
