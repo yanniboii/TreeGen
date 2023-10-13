@@ -9,7 +9,7 @@ public class TransformInfo
 {
     public Vector3 position;
     public Quaternion rotation;
-    public List<Vector3> startVertices;
+    public List<Vector3> startVertices = new List<Vector3>();
     public Vector3 growDir;
     public Vector3 pivot;
 }
@@ -49,9 +49,9 @@ public class LSystems : MonoBehaviour
 
     void spawntrees()
     {
-        for (int offsetX = 0; offsetX < 50; offsetX += 50)
+        for (int offsetX = 0; offsetX < 1250; offsetX += 50)
         {
-            for (int offsetY = 0; offsetY < 50; offsetY += 50)
+            for (int offsetY = 0; offsetY < 1250; offsetY += 50)
             {
                 Generate(new Vector3(offsetX, 0, offsetY));
             }
@@ -110,7 +110,8 @@ public class LSystems : MonoBehaviour
                     branch.AddComponent<MeshRenderer>();
 
                     Vector3 growDir = treeGenerator.getRandomVectorInCone(20, Vector3.up);
-                   // treeGenerator.GenerateTree(branch, initialPos, initialRotation, growDir);
+                    Vector3 verts[transformStack.Peek().startVertices.Count()] = transformStack.Peek().startVertices.ToArray();
+                    treeGenerator.GenerateTree(branch, initialPos, initialRotation, growDir, out growDir);
 
                     CombineInstance branchInstance = new CombineInstance();
                     branchInstance.mesh = branch.GetComponent<MeshFilter>().sharedMesh;
@@ -151,7 +152,7 @@ public class LSystems : MonoBehaviour
                     Vector3[] vertices = branchCombine[branchCombine.Count() - 1].mesh.vertices;
                     for(int i = 0; i < treeGenerator.faces; i++)
                     {
-                        transformStack.Last().startVertices.Add(vertices[vertices.Length - (treeGenerator.faces+i)]);
+                        transformStack.Peek().startVertices.Add(vertices[vertices.Length - (treeGenerator.faces+i)]);
                     }
 
                     break;
