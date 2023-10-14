@@ -94,7 +94,8 @@ public class LSystems : MonoBehaviour
         List<GameObject> oldGameObjects = new List<GameObject>();
 
         Color randomTreeColor = treeGenerator.gradient.Evaluate(Random.Range(0f, 1f));
-
+        bool firstbranch = true;
+        Vector3 growDirection;
         foreach (char c in currentString)
         {
             switch (c)
@@ -110,8 +111,28 @@ public class LSystems : MonoBehaviour
                     branch.AddComponent<MeshRenderer>();
 
                     Vector3 growDir = treeGenerator.getRandomVectorInCone(20, Vector3.up);
-                    Vector3 verts[transformStack.Peek().startVertices.Count()] = transformStack.Peek().startVertices.ToArray();
-                    treeGenerator.GenerateTree(branch, initialPos, initialRotation, growDir, out growDir);
+                    if (transformStack.Count != 0)
+                    {
+                        Vector3[] verts = transformStack.Peek().startVertices.ToArray();
+
+
+                        if (verts != null)
+                        {
+                            treeGenerator.GenerateTree(branch, initialPos, initialRotation, growDir, verts, out growDirection);
+                            transformStack.Push(new TransformInfo()
+                            {
+                                growDir = growDirection
+                            });
+                        }
+                        
+                            
+                        
+                    }
+                    else
+                    {
+                        treeGenerator.GenerateTree(branch, initialPos, initialRotation, growDir, out growDirection);
+                        transformStack.Peek().growDir = growDirection;
+                    }
 
                     CombineInstance branchInstance = new CombineInstance();
                     branchInstance.mesh = branch.GetComponent<MeshFilter>().sharedMesh;
@@ -143,16 +164,38 @@ public class LSystems : MonoBehaviour
 
                     break;
                 case '[':
+                    if (firstbranch)
+                    {
+                        transformStack.Peek().position = transform.position;
+                        transformStack.Peek().rotation = transform.rotation;
+                        firstbranch = false;
+                    }
                     transformStack.Push(new TransformInfo()
                     {
                         position = transform.position,
                         rotation = transform.rotation,
                         growDir = Vector3.up
                     }) ;
-                    Vector3[] vertices = branchCombine[branchCombine.Count() - 1].mesh.vertices;
-                    for(int i = 0; i < treeGenerator.faces; i++)
+                    if (branchCombine.Count > 0)
                     {
-                        transformStack.Peek().startVertices.Add(vertices[vertices.Length - (treeGenerator.faces+i)]);
+                        CombineInstance lastBranchInstance = branchCombine[branchCombine.Count - 1];
+                        Mesh bMesh = lastBranchInstance.mesh;
+
+                        // Ensure that the branch mesh has vertices
+                        if (bMesh != null)
+                        {
+                            Vector3[] vertices = bMesh.vertices;
+
+                            // Add vertices to the startVertices list
+                            for (int i = 0; i < treeGenerator.faces; i++)
+                            {
+                                int index = vertices.Length - (treeGenerator.faces + i);
+                                if (index >= 0 && index < vertices.Length)
+                                {
+                                    transformStack.Peek().startVertices.Add(vertices[index]);
+                                }
+                            }
+                        }
                     }
 
                     break;
