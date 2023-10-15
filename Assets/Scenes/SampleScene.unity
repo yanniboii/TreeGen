@@ -198,9 +198,9 @@ MonoBehaviour:
   reductionRate: 0.9995
   randomness: 1.93
   randomnessScale: 28.11
-  randomnessX: 0.36
-  randomnessY: 0.11
-  randomnessZ: 1.35
+  randomnessX: 2
+  randomnessY: 0.5
+  randomnessZ: 2
   rootChance: 0
   rootThiccness: 2
   angularOffset: 187.01
@@ -329,13 +329,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f21853d953eda274d8e281266e86b003, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameObject: {fileID: 0}
   axiom: A
-  recursion: 5
-  angle: 60
+  recursion: 6
+  _angle: 5
   treeAmount: 300
   letter: 41004600
   rule:
-  - F[+A]F[>AL]<A
+  - F[A][A]
   - F
 --- !u!1 &705507993
 GameObject:

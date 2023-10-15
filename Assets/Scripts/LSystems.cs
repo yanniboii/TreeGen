@@ -12,14 +12,17 @@ public class TransformInfo
     public List<Vector3> startVertices = new List<Vector3>();
     public Vector3 growDir;
     public Vector3 pivot;
+    public Vector3 lastPivot;
+    public Vector3 growth;
 }
 
 [System.Serializable]
 public class LSystems : MonoBehaviour
 {
+    [SerializeField] public GameObject gameObject;
     [SerializeField] public string axiom;
     [SerializeField] public int recursion = 1;
-    [SerializeField] float angle = 20;
+    [SerializeField] float _angle = 5;
     [SerializeField] int treeAmount;
 
     private Stack<TransformInfo> transformStack;
@@ -49,9 +52,9 @@ public class LSystems : MonoBehaviour
 
     void spawntrees()
     {
-        for (int offsetX = 0; offsetX < 1250; offsetX += 50)
+        for (int offsetX = 0; offsetX < 750; offsetX += 50)
         {
-            for (int offsetY = 0; offsetY < 1250; offsetY += 50)
+            for (int offsetY = 0; offsetY < 750; offsetY += 50)
             {
                 Generate(new Vector3(offsetX, 0, offsetY));
             }
@@ -60,7 +63,7 @@ public class LSystems : MonoBehaviour
     }
     void Generate(Vector3 offset)
     {
-
+        float angle = _angle;
         currentString = axiom;
         GameObject tree = new GameObject("tree");
         tree.transform.position = offset;
@@ -95,7 +98,12 @@ public class LSystems : MonoBehaviour
 
         Color randomTreeColor = treeGenerator.gradient.Evaluate(Random.Range(0f, 1f));
         bool firstbranch = true;
-        Vector3 growDirection;
+        Vector3 growDirection = Vector3.up;
+        Vector3 pivot = Vector3.zero;
+        Vector3 lastPivot = Vector3.zero;
+        Vector3 growth = Vector3.zero;
+        Vector3[] _vertices = new Vector3[treeGenerator.faces];
+
         foreach (char c in currentString)
         {
             switch (c)
@@ -103,44 +111,57 @@ public class LSystems : MonoBehaviour
                 case 'A':
                     break;
                 case 'F':
+                    lastPivot = pivot;
                     Vector3 initialPos = transform.position;
                     Quaternion initialRotation = transform.rotation;
                     transform.Translate(Vector3.up * ((treeGenerator.cylinderHeight * treeGenerator.floors) - treeGenerator.cylinderHeight));
                     GameObject branch = new GameObject("Branch");
                     branch.AddComponent<MeshFilter>();
                     branch.AddComponent<MeshRenderer>();
-
-                    Vector3 growDir = treeGenerator.getRandomVectorInCone(20, Vector3.up);
-                    if (transformStack.Count != 0)
-                    {
-                        Vector3[] verts = transformStack.Peek().startVertices.ToArray();
-
-
-                        if (verts != null)
+                    Vector3 growDir = treeGenerator.getRandomVectorInCone(angle, growDirection);
+                    if (!firstbranch)
+                    {if(transformStack.Count() != 0)
                         {
-                            treeGenerator.GenerateTree(branch, initialPos, initialRotation, growDir, verts, out growDirection);
-                            transformStack.Push(new TransformInfo()
+                            Vector3[] verts = transformStack.Peek().startVertices.ToArray();
+                            if (verts != null)
                             {
-                                growDir = growDirection
-                            });
+                                treeGenerator.GenerateTree(branch, transformStack.Peek().pivot, initialRotation, growDir, angle, verts, out growDirection, out pivot);
+                                Debug.Log(transformStack.Peek().pivot);
+                                //GameObject cube = Instantiate(gameObject, transformStack.Peek().pivot, Quaternion.identity, gameObject.transform);
+                                //cube.name = "cube";
+                                Debug.DrawRay(pivot, growDirection);
+                            }
                         }
-                        
-                            
-                        
+
                     }
                     else
                     {
-                        treeGenerator.GenerateTree(branch, initialPos, initialRotation, growDir, out growDirection);
-                        transformStack.Peek().growDir = growDirection;
+                        treeGenerator.GenerateTree(branch, initialPos, initialRotation, growDir, angle, out growDirection, out pivot);
+                        Debug.DrawRay(initialPos, growDirection);
+                        firstbranch = false;
                     }
-
+                    angle += 1;
+                    pivot += lastPivot;
+                    growth = pivot - lastPivot;
                     CombineInstance branchInstance = new CombineInstance();
+                    
+                        Vector3[] vertices = branch.GetComponent<MeshFilter>().sharedMesh.vertices;
+
+                    // Add vertices to the startVertices list
+                    for (int i = 0; i < treeGenerator.faces; i++)
+                    {
+                        int index = vertices.Length - (treeGenerator.faces - i);
+                        if (index >= 0 && index < vertices.Length)
+                        {
+
+                            _vertices[i] = (vertices[index] - growth);
+                        }
+                    }
                     branchInstance.mesh = branch.GetComponent<MeshFilter>().sharedMesh;
                     branchInstance.transform = branch.GetComponent<MeshFilter>().transform.localToWorldMatrix;
 
                     branchCombine.Add(branchInstance);
                     oldGameObjects.Add(branch);
-
                     break;
                 case 'L':
                     Vector3 initialPoss = transform.position;
@@ -153,7 +174,7 @@ public class LSystems : MonoBehaviour
                     // Set the material for leaves
                     leafRenderer.sharedMaterial = pentagonalDodecahedronGenerator.material; // Replace with your leaf material
 
-                    pentagonalDodecahedronGenerator.GeneratePentagonalDodecahedron(leave, initialPoss);
+                    pentagonalDodecahedronGenerator.GeneratePentagonalDodecahedron(leave, transformStack.Peek().pivot);
 
                     CombineInstance leafInstance = new CombineInstance();
                     leafInstance.mesh = leave.GetComponent<MeshFilter>().sharedMesh;
@@ -164,46 +185,30 @@ public class LSystems : MonoBehaviour
 
                     break;
                 case '[':
-                    if (firstbranch)
-                    {
-                        transformStack.Peek().position = transform.position;
-                        transformStack.Peek().rotation = transform.rotation;
-                        firstbranch = false;
-                    }
+
                     transformStack.Push(new TransformInfo()
                     {
                         position = transform.position,
                         rotation = transform.rotation,
-                        growDir = Vector3.up
+                        growDir = growDirection,
+                        pivot = pivot,
+                        lastPivot = lastPivot,
+                        growth = growth,
+                        startVertices = _vertices.ToList()
                     }) ;
-                    if (branchCombine.Count > 0)
-                    {
-                        CombineInstance lastBranchInstance = branchCombine[branchCombine.Count - 1];
-                        Mesh bMesh = lastBranchInstance.mesh;
-
-                        // Ensure that the branch mesh has vertices
-                        if (bMesh != null)
-                        {
-                            Vector3[] vertices = bMesh.vertices;
-
-                            // Add vertices to the startVertices list
-                            for (int i = 0; i < treeGenerator.faces; i++)
-                            {
-                                int index = vertices.Length - (treeGenerator.faces + i);
-                                if (index >= 0 && index < vertices.Length)
-                                {
-                                    transformStack.Peek().startVertices.Add(vertices[index]);
-                                }
-                            }
-                        }
-                    }
+                    
 
                     break;
                 case ']':
                     TransformInfo ti = transformStack.Pop();
                     transform.position = ti.position;
                     transform.rotation = ti.rotation;
-                    
+                    growDirection = ti.growDir;
+                    pivot = ti.pivot;
+                    lastPivot = ti.lastPivot;
+                    growth = ti.growth;
+                    _vertices = ti.startVertices.ToArray();
+
                     break;
                 case '>':
                     transform.Rotate(Vector3.right * Random.Range(-angle, angle));
