@@ -331,12 +331,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameObject: {fileID: 0}
   axiom: A
-  recursion: 6
+  recursion: 5
   _angle: 5
   treeAmount: 300
   letter: 41004600
   rule:
-  - F[A][A]
+  - F[++AL--][+++AL---]
   - F
 --- !u!1 &705507993
 GameObject:

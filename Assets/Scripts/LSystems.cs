@@ -103,13 +103,11 @@ public class LSystems : MonoBehaviour
         Vector3 lastPivot = Vector3.zero;
         Vector3 growth = Vector3.zero;
         Vector3[] _vertices = new Vector3[treeGenerator.faces];
-
+        int branchIndex = 0;
         foreach (char c in currentString)
         {
             switch (c)
             {
-                case 'A':
-                    break;
                 case 'F':
                     lastPivot = pivot;
                     Vector3 initialPos = transform.position;
@@ -140,12 +138,11 @@ public class LSystems : MonoBehaviour
                         Debug.DrawRay(initialPos, growDirection);
                         firstbranch = false;
                     }
-                    angle += 1;
                     pivot += lastPivot;
                     growth = pivot - lastPivot;
                     CombineInstance branchInstance = new CombineInstance();
                     
-                        Vector3[] vertices = branch.GetComponent<MeshFilter>().sharedMesh.vertices;
+                    Vector3[] vertices = branch.GetComponent<MeshFilter>().sharedMesh.vertices;
 
                     // Add vertices to the startVertices list
                     for (int i = 0; i < treeGenerator.faces; i++)
@@ -164,6 +161,7 @@ public class LSystems : MonoBehaviour
                     oldGameObjects.Add(branch);
                     break;
                 case 'L':
+                    if(branchIndex != recursion) { break; }
                     Vector3 initialPoss = transform.position;
                     transform.Translate(Vector3.up * ((treeGenerator.cylinderHeight * treeGenerator.floors) - treeGenerator.cylinderHeight));
                     GameObject leave = new GameObject("Leaf");
@@ -185,7 +183,7 @@ public class LSystems : MonoBehaviour
 
                     break;
                 case '[':
-
+                    branchIndex++; 
                     transformStack.Push(new TransformInfo()
                     {
                         position = transform.position,
@@ -200,6 +198,7 @@ public class LSystems : MonoBehaviour
 
                     break;
                 case ']':
+                    branchIndex--;
                     TransformInfo ti = transformStack.Pop();
                     transform.position = ti.position;
                     transform.rotation = ti.rotation;
@@ -217,10 +216,14 @@ public class LSystems : MonoBehaviour
                     transform.Rotate(Vector3.left * Random.Range(-angle, angle));
                     break;
                 case '+':
-                    transform.Rotate(Vector3.forward * Random.Range(-angle, angle));
+                    //transform.Rotate(Vector3.forward * Random.Range(-angle, angle));
+                    angle += 5f;
+
                     break;
                 case '-':
-                    transform.Rotate(Vector3.forward * Random.Range(-angle, angle));
+                    //transform.Rotate(Vector3.forward * Random.Range(-angle, angle));
+                    angle -= 5f;
+
                     break;
             }
 
