@@ -14,16 +14,17 @@ public class TransformInfo
     public Vector3 pivot;
     public Vector3 lastPivot;
     public Vector3 growth;
+    public float thiccness;
 }
 
 [System.Serializable]
 public class LSystems : MonoBehaviour
 {
-    [SerializeField] public GameObject gameObject;
     [SerializeField] public string axiom;
     [SerializeField] public int recursion = 1;
     [SerializeField] float _angle = 5;
     [SerializeField] int treeAmount;
+    [SerializeField] bool useThiccness;
 
     private Stack<TransformInfo> transformStack;
     [SerializeField] public List<char> letter;
@@ -103,7 +104,9 @@ public class LSystems : MonoBehaviour
         Vector3 lastPivot = Vector3.zero;
         Vector3 growth = Vector3.zero;
         Vector3[] _vertices = new Vector3[treeGenerator.faces];
+        float thiccness = treeGenerator.thiccness;
         int branchIndex = 0;
+        float _reductionRate = treeGenerator.reductionRate;
         foreach (char c in currentString)
         {
             switch (c)
@@ -123,19 +126,28 @@ public class LSystems : MonoBehaviour
                             Vector3[] verts = transformStack.Peek().startVertices.ToArray();
                             if (verts != null)
                             {
-                                treeGenerator.GenerateTree(branch, transformStack.Peek().pivot, initialRotation, growDir, angle, verts, out growDirection, out pivot);
-                                Debug.Log(transformStack.Peek().pivot);
-                                //GameObject cube = Instantiate(gameObject, transformStack.Peek().pivot, Quaternion.identity, gameObject.transform);
-                                //cube.name = "cube";
-                                Debug.DrawRay(pivot, growDirection);
+                                if (useThiccness)
+                                {
+                                    treeGenerator.GenerateTree(branch, transformStack.Peek().pivot, initialRotation, growDir, angle, transformStack.Peek().thiccness, verts, out growDirection, out pivot,out thiccness);
+                                }
+                                else
+                                {
+                                    treeGenerator.GenerateTree(branch, transformStack.Peek().pivot, initialRotation, growDir, angle, verts, out growDirection, out pivot);
+                                }
                             }
                         }
 
                     }
                     else
                     {
-                        treeGenerator.GenerateTree(branch, initialPos, initialRotation, growDir, angle, out growDirection, out pivot);
-                        Debug.DrawRay(initialPos, growDirection);
+                        if (useThiccness)
+                        {
+                            treeGenerator.GenerateTree(branch, initialPos, initialRotation, growDir, angle, out growDirection, out pivot, out thiccness);
+                        }
+                        else
+                        {
+                            treeGenerator.GenerateTree(branch, initialPos, initialRotation, growDir, angle, out growDirection, out pivot);
+                        }
                         firstbranch = false;
                     }
                     pivot += lastPivot;
@@ -192,7 +204,8 @@ public class LSystems : MonoBehaviour
                         pivot = pivot,
                         lastPivot = lastPivot,
                         growth = growth,
-                        startVertices = _vertices.ToList()
+                        startVertices = _vertices.ToList(),
+                        thiccness = thiccness,
                     }) ;
                     
 
@@ -207,13 +220,16 @@ public class LSystems : MonoBehaviour
                     lastPivot = ti.lastPivot;
                     growth = ti.growth;
                     _vertices = ti.startVertices.ToArray();
+                    thiccness = ti.thiccness;
 
                     break;
                 case '>':
-                    transform.Rotate(Vector3.right * Random.Range(-angle, angle));
+                    //transform.Rotate(Vector3.right * Random.Range(-angle, angle));
+                    thiccness+=0.01f;
                     break;
                 case '<':
-                    transform.Rotate(Vector3.left * Random.Range(-angle, angle));
+                    //transform.Rotate(Vector3.left * Random.Range(-angle, angle));
+                    thiccness-=0.01f;
                     break;
                 case '+':
                     //transform.Rotate(Vector3.forward * Random.Range(-angle, angle));
@@ -224,6 +240,12 @@ public class LSystems : MonoBehaviour
                     //transform.Rotate(Vector3.forward * Random.Range(-angle, angle));
                     angle -= 5f;
 
+                    break;
+                case ',':
+                    treeGenerator.reductionRate = _reductionRate;
+                    break;
+                case '.':
+                    treeGenerator.reductionRate =1;
                     break;
             }
 
@@ -252,7 +274,7 @@ public class LSystems : MonoBehaviour
 
         Debug.Log(randomFloat);
         tree.GetComponent<MeshRenderer>().material.SetFloat("_Float", randomFloat);
-        //tree.GetComponent<MeshFilter>().sharedMesh = MeshSmoothener.SmoothMesh(tree.GetComponent<MeshFilter>().sharedMesh, 1, MeshSmoothener.Filter.Laplacian);
+        tree.GetComponent<MeshFilter>().sharedMesh = MeshSmoothener.SmoothMesh(tree.GetComponent<MeshFilter>().sharedMesh, 1, MeshSmoothener.Filter.Laplacian);
         // Optionally, you can create a separate GameObject for leaves if needed
         GameObject leavesObject = new GameObject("Leaves");
         leavesObject.transform.position = offset;
@@ -264,5 +286,6 @@ public class LSystems : MonoBehaviour
         // Set the material for leaves
         leavesMeshRenderer.sharedMaterial = pentagonalDodecahedronGenerator.material; // Replace with your leaf material
         leavesMeshRenderer.material.SetFloat("_Float", randomFloat2);
+        treeGenerator.reductionRate = _reductionRate;
     }
 }

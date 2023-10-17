@@ -57,6 +57,21 @@ public class TreeGenerator : MonoBehaviour
 
         tree.GetComponent<MeshRenderer>().sharedMaterial = material;
     }
+    public void GenerateTree(GameObject tree, Vector3 startPos, Quaternion startRot, Vector3 startingDirection, float angle, float thiccness, Vector3[] startVerts, out Vector3 growDir, out Vector3 pivot, out float newThiccness)
+    {
+        Vector3[] vertices = new Vector3[faces];
+        int[] triangles = new int[faces * 6];
+        Vector2[] uvs = new Vector2[vertices.Length];
+
+
+        tree.transform.position = startPos;
+        tree.transform.rotation = startRot;
+
+        Mesh mesh = GenerateLayer(tree, startVerts, triangles, uvs, startingDirection, angle,thiccness, out growDir, out pivot, out newThiccness);
+        tree.GetComponent<MeshFilter>().mesh = mesh;
+
+        tree.GetComponent<MeshRenderer>().sharedMaterial = material;
+    }
     public void GenerateTree(GameObject tree, Vector3 startPos, Quaternion startRot, Vector3 startingDirection, Vector3[] startVerts)
     {
         Vector3[] vertices = new Vector3[faces];
@@ -143,6 +158,50 @@ public class TreeGenerator : MonoBehaviour
 
         tree.GetComponent<MeshRenderer>().sharedMaterial = material;
     }
+
+    public void GenerateTree(GameObject tree, Vector3 startPos, Quaternion startRot, Vector3 startingDirection, float angle, out Vector3 growDir, out Vector3 pivot, out float newThiccness)
+    {
+        Vector3[] vertices = new Vector3[faces];
+        int[] triangles = new int[faces * 6];
+        Vector2[] uvs = new Vector2[vertices.Length];
+
+        float angularStep = 2f * Mathf.PI / (float)(faces);
+        for (int j = 0; j < faces; ++j)
+        {
+            bool plusJ = false;
+            Vector3 pos = new Vector3(Mathf.Cos(j * angularStep + angularOffset), 0f, Mathf.Sin(j * angularStep + angularOffset)) + GetRandomVec3();
+            pos *= thiccness;
+            if ((Random.Range(0f, 1f) * 100) < rootChance)
+            {
+                Vector3 thickness1 = pos * rootThiccness;
+                if (j < faces - 1)
+                {
+                    vertices[j] = thickness1;
+                    vertices[j + 1] = thickness1;
+                    plusJ = true;
+                }
+
+            }
+            else
+            {
+                vertices[j] = (pos);
+            }
+            uvs[j] = new Vector2(j * angularStep, uvs[j].y);
+            if (plusJ)
+            {
+                j++;
+            }
+        }
+
+
+        tree.transform.position = startPos;
+        tree.transform.rotation = startRot;
+
+        Mesh mesh = GenerateLayer(tree, vertices, triangles, uvs, startingDirection, angle, out growDir, out pivot, out newThiccness);
+        tree.GetComponent<MeshFilter>().mesh = mesh;
+
+        tree.GetComponent<MeshRenderer>().sharedMaterial = material;
+    }
     Vector3 ChangeCoordinates(Vector3 input, Vector3 inputNormal, Vector3 newNormal)
     {
         float angle = Vector3.Angle(inputNormal, newNormal);
@@ -222,6 +281,144 @@ public class TreeGenerator : MonoBehaviour
             //}
         }
 
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+        mesh.uv = uvs;
+        return mesh;
+    }
+
+    Mesh GenerateLayer(GameObject _tree, Vector3[] _vertices, int[] _triangles, Vector2[] _uvs, Vector3 startingDirection, float angle, out Vector3 growDirection, out Vector3 pivot, out float newThiccness)
+    {
+        pivot = Vector3.zero;
+        float _thiccness = thiccness;
+        Mesh mesh = new Mesh();
+
+        Vector3[] vertices = new Vector3[faces * floors];
+        Vector2[] uvs = new Vector2[(vertices.Length)];
+
+        for (int i = 0; i < _vertices.Length; i++)
+        {
+            vertices[i] = _vertices[i];
+            uvs[i] = _uvs[i];
+        }
+
+        int[] triangles = new int[6 * (vertices.Length - faces)];
+
+        Vector3 startingPos = new Vector3();
+
+        float angularStep = 2f * Mathf.PI / (float)(faces);
+        Vector3 first = new Vector3(Mathf.Cos(angularOffset), 0f, Mathf.Sin(angularOffset));
+        first = ChangeCoordinates(first, Vector3.up, Vector3.up);
+        first += startingPos;
+
+        float currentReduction = _thiccness;
+
+        growDirection = startingDirection;
+
+        Vector3 lastPivot = startingPos;
+        for (int i = 1; i < floors; i++)
+        {
+            pivot = lastPivot + cylinderHeight * growDirection;
+            lastPivot = pivot;
+            for (int j = 0; j < faces; j++)
+            {
+                float x = Mathf.Cos(j * angularStep + angularOffset);
+                float z = Mathf.Sin(j * angularStep + angularOffset);
+
+                Vector3 pos = new Vector3(x, 0f, z) + GetRandomVec3();
+                pos *= _thiccness;
+                pos = ChangeCoordinates(pos, new Vector3(0f, 1f, 0f), growDirection);
+                vertices[i * faces + j] = pos + pivot;
+                uvs[i * faces + j] = new Vector2(j * angularStep, vertices[i * faces + j].y);
+
+                triangles[6 * ((i - 1) * faces + j)] = (i - 1) * faces + j;
+                triangles[6 * ((i - 1) * faces + j) + 1] = (i) * faces + j;
+                triangles[6 * ((i - 1) * faces + j) + 2] = (i - 1) * faces + (j + 1) % faces;
+                triangles[6 * ((i - 1) * faces + j) + 3] = (i - 1) * faces + (j + 1) % faces;
+                triangles[6 * ((i - 1) * faces + j) + 4] = (i) * faces + j;
+                triangles[6 * ((i - 1) * faces + j) + 5] = (i) * faces + (j + 1) % faces;
+
+            }
+            growDirection = getRandomVectorInCone(angle, growDirection);
+            currentReduction *= reductionRate;
+            _thiccness = currentReduction;
+            //if(i == floors-1)
+            //{
+            //    GameObject PentagonalDodecahedron = new GameObject("PentagonalDodecahedron");
+            //    pentagonalDodecahedronGenerator.radius = currentReduction * leaveSize;
+            //    pentagonalDodecahedronGenerator.GeneratePentagonalDodecahedron(PentagonalDodecahedron, _tree, pivot);
+            //}
+        }
+        newThiccness = _thiccness;
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+        mesh.uv = uvs;
+        return mesh;
+    }
+
+    Mesh GenerateLayer(GameObject _tree, Vector3[] _vertices, int[] _triangles, Vector2[] _uvs, Vector3 startingDirection, float angle,float thiccness, out Vector3 growDirection, out Vector3 pivot, out float newThiccness)
+    {
+        pivot = Vector3.zero;
+        float _thiccness = thiccness;
+        Mesh mesh = new Mesh();
+
+        Vector3[] vertices = new Vector3[faces * floors];
+        Vector2[] uvs = new Vector2[(vertices.Length)];
+
+        for (int i = 0; i < _vertices.Length; i++)
+        {
+            vertices[i] = _vertices[i];
+            uvs[i] = _uvs[i];
+        }
+
+        int[] triangles = new int[6 * (vertices.Length - faces)];
+
+        Vector3 startingPos = new Vector3();
+
+        float angularStep = 2f * Mathf.PI / (float)(faces);
+        Vector3 first = new Vector3(Mathf.Cos(angularOffset), 0f, Mathf.Sin(angularOffset));
+        first = ChangeCoordinates(first, Vector3.up, Vector3.up);
+        first += startingPos;
+
+        float currentReduction = _thiccness;
+
+        growDirection = startingDirection;
+
+        Vector3 lastPivot = startingPos;
+        for (int i = 1; i < floors; i++)
+        {
+            pivot = lastPivot + cylinderHeight * growDirection;
+            lastPivot = pivot;
+            for (int j = 0; j < faces; j++)
+            {
+                float x = Mathf.Cos(j * angularStep + angularOffset);
+                float z = Mathf.Sin(j * angularStep + angularOffset);
+
+                Vector3 pos = new Vector3(x, 0f, z) + GetRandomVec3();
+                pos *= _thiccness;
+                pos = ChangeCoordinates(pos, new Vector3(0f, 1f, 0f), growDirection);
+                vertices[i * faces + j] = pos + pivot;
+                uvs[i * faces + j] = new Vector2(j * angularStep, vertices[i * faces + j].y);
+
+                triangles[6 * ((i - 1) * faces + j)] = (i - 1) * faces + j;
+                triangles[6 * ((i - 1) * faces + j) + 1] = (i) * faces + j;
+                triangles[6 * ((i - 1) * faces + j) + 2] = (i - 1) * faces + (j + 1) % faces;
+                triangles[6 * ((i - 1) * faces + j) + 3] = (i - 1) * faces + (j + 1) % faces;
+                triangles[6 * ((i - 1) * faces + j) + 4] = (i) * faces + j;
+                triangles[6 * ((i - 1) * faces + j) + 5] = (i) * faces + (j + 1) % faces;
+
+            }
+            growDirection = getRandomVectorInCone(angle, growDirection);
+            currentReduction *= reductionRate;
+            _thiccness = currentReduction;
+            //if(i == floors-1)
+            //{
+            //    GameObject PentagonalDodecahedron = new GameObject("PentagonalDodecahedron");
+            //    pentagonalDodecahedronGenerator.radius = currentReduction * leaveSize;
+            //    pentagonalDodecahedronGenerator.GeneratePentagonalDodecahedron(PentagonalDodecahedron, _tree, pivot);
+            //}
+        }
+        newThiccness = _thiccness;
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.uv = uvs;
