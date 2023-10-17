@@ -139,6 +139,7 @@ GameObject:
   - component: {fileID: 509652301}
   - component: {fileID: 509652302}
   - component: {fileID: 509652303}
+  - component: {fileID: 509652304}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -159,7 +160,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &509652297
 MonoBehaviour:
@@ -190,12 +191,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: 310221fd9058b6f4eae35ae4d9348076, type: 2}
   pentagonalDodecahedronGenerator: {fileID: 509652302}
-  faces: 60
-  floors: 10
+  faces: 20
+  floors: 25
   cylinderHeight: 0.45
   thiccness: 3
   leaveSize: 20.08
-  reductionRate: 0.9278
+  reductionRate: 0.9793
   randomness: 1.93
   randomnessScale: 28.11
   randomnessX: 2
@@ -315,6 +316,57 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 1.31
+  curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.008266449
+      value: 1.4431496
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1.4578581
+      value: 2.5363193
+      inSlope: -0.11411016
+      outSlope: -0.11411016
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 3.1102076
+      value: 0.4033977
+      inSlope: 0.08560172
+      outSlope: 0.08560172
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 3.3408623
+      value: 0.31501836
+      inSlope: -0.023402365
+      outSlope: -0.023402365
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 3.5028381
+      value: 0.005264282
+      inSlope: -0.93997574
+      outSlope: -0.93997574
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 1
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   material: {fileID: 2100000, guid: 68b4de66af026db4c9eab9eded3ae1bc, type: 2}
   gameObejct: {fileID: 1015452092}
 --- !u!114 &509652303
@@ -336,8 +388,23 @@ MonoBehaviour:
   useThiccness: 1
   letter: 41004600
   rule:
-  - F[++.A,L--][-,AL.+]
+  - F[++.A,L--][+,AL.-]
   - F
+--- !u!114 &509652304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509652295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c9f8d0c8a4fc494bb2e9b5671571d39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boidAmount: 1231
+  spawnRange: 0.78
+  boidPrefab: {fileID: 5762183636519925906, guid: 74402fbc020204044bfc455003d1be5c, type: 3}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -431,7 +498,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!114 &705507996
 MonoBehaviour:
@@ -453,6 +520,79 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
+--- !u!1001 &835778518
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2087889529795052296, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2087889529795052296, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 100.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2087889529795052296, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 56.63801
+      objectReference: {fileID: 0}
+    - target: {fileID: 2087889529795052296, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 100.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2087889529795052296, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2087889529795052296, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2087889529795052296, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2087889529795052296, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2087889529795052296, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2087889529795052296, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2087889529795052296, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2087889529795052296, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2087889529795052296, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2087889529795052296, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2087889529795052296, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2087889529795052303, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
+      propertyPath: m_Name
+      value: Planes
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -667,7 +807,7 @@ Transform:
   m_Children:
   - {fileID: 1509011006}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1509011005
 GameObject:

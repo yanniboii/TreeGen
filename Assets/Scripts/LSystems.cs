@@ -136,6 +136,19 @@ public class LSystems : MonoBehaviour
                                 }
                             }
                         }
+                        else
+                        {
+                            Vector3[] verts = _vertices;
+
+                            if (useThiccness)
+                            {
+                                treeGenerator.GenerateTree(branch, pivot, initialRotation, growDir, angle, thiccness, verts, out growDirection, out pivot, out thiccness);
+                            }
+                            else
+                            {
+                                treeGenerator.GenerateTree(branch, pivot, initialRotation, growDir, angle, verts, out growDirection, out pivot);
+                            }
+                        }
 
                     }
                     else
@@ -184,7 +197,7 @@ public class LSystems : MonoBehaviour
                     // Set the material for leaves
                     leafRenderer.sharedMaterial = pentagonalDodecahedronGenerator.material; // Replace with your leaf material
 
-                    pentagonalDodecahedronGenerator.GeneratePentagonalDodecahedron(leave, transformStack.Peek().pivot);
+                    pentagonalDodecahedronGenerator.GeneratePentagonalDodecahedron(leave, transformStack.Peek().pivot, transformStack.Peek().thiccness);
 
                     CombineInstance leafInstance = new CombineInstance();
                     leafInstance.mesh = leave.GetComponent<MeshFilter>().sharedMesh;
@@ -234,6 +247,11 @@ public class LSystems : MonoBehaviour
                 case '+':
                     //transform.Rotate(Vector3.forward * Random.Range(-angle, angle));
                     angle += 5f;
+                    if (angle > 50)
+                    {
+                        angle = 50;
+                    }
+                    Debug.Log(angle);
 
                     break;
                 case '-':
@@ -272,9 +290,8 @@ public class LSystems : MonoBehaviour
         float randomFloat = Random.Range(0f, 1f);
         float randomFloat2 = Random.Range(0f, 1f);
 
-        Debug.Log(randomFloat);
         tree.GetComponent<MeshRenderer>().material.SetFloat("_Float", randomFloat);
-        tree.GetComponent<MeshFilter>().sharedMesh = MeshSmoothener.SmoothMesh(tree.GetComponent<MeshFilter>().sharedMesh, 1, MeshSmoothener.Filter.Laplacian);
+        //tree.GetComponent<MeshFilter>().sharedMesh = MeshSmoothener.SmoothMesh(tree.GetComponent<MeshFilter>().sharedMesh, 1, MeshSmoothener.Filter.Laplacian);
         // Optionally, you can create a separate GameObject for leaves if needed
         GameObject leavesObject = new GameObject("Leaves");
         leavesObject.transform.position = offset;

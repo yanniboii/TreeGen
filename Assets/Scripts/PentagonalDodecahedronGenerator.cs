@@ -3,6 +3,7 @@ using UnityEngine;
 public class PentagonalDodecahedronGenerator : MonoBehaviour
 {
     public float radius = 1.0f;
+    [SerializeField]public AnimationCurve curve;
     public Material material;
     public GameObject gameObejct;
 
@@ -14,9 +15,10 @@ public class PentagonalDodecahedronGenerator : MonoBehaviour
     }
 
 
-    public void GeneratePentagonalDodecahedron(GameObject PentagonalDodecahedron, Vector3 pos)
+    public void GeneratePentagonalDodecahedron(GameObject PentagonalDodecahedron, Vector3 pos, float thiccness)
     {
         PentagonalDodecahedron.transform.position = pos;
+        radius = curve.Evaluate(thiccness);
         //PentagonalDodecahedron.transform.SetParent(parent.transform, false);
         Mesh mesh = new Mesh();
 
