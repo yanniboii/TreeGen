@@ -194,14 +194,14 @@ MonoBehaviour:
   faces: 20
   floors: 25
   cylinderHeight: 0.45
-  thiccness: 3
+  thiccness: 2
   leaveSize: 20.08
   reductionRate: 0.9793
   randomness: 1.93
   randomnessScale: 28.11
-  randomnessX: 2
-  randomnessY: 0.5
-  randomnessZ: 2
+  randomnessX: 1
+  randomnessY: 0.6
+  randomnessZ: 1
   rootChance: 0
   rootThiccness: 2
   angularOffset: 187.01
@@ -381,15 +381,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f21853d953eda274d8e281266e86b003, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  axiom: A
+  axiom: K
   recursion: 7
   _angle: 5
   treeAmount: 300
   useThiccness: 1
-  letter: 41004600
+  lIndex: 07000000
+  letter: 410046004b005000
   rule:
-  - F[++.A,L--][+,AL.-]
+  - F[++,A.L--][+,AL.-]
   - F
+  - '[P][P][P]'
+  - F[A]
 --- !u!114 &509652304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397,7 +400,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 509652295}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c9f8d0c8a4fc494bb2e9b5671571d39, type: 3}
   m_Name: 
@@ -590,6 +593,10 @@ PrefabInstance:
     - target: {fileID: 2087889529795052303, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
       propertyPath: m_Name
       value: Planes
+      objectReference: {fileID: 0}
+    - target: {fileID: 2087889529795052303, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6e35b667304d9da43934de6e8c67d69a, type: 3}

@@ -53,9 +53,12 @@ Material:
     m_Floats:
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
+    - _Clip: 1
     - _Float: 0
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _Scale: 0
+    - _grow: 0
     m_Colors:
     - _Color: {r: 0.5130029, g: 0.1287959, b: 0.013417559, a: 1}
     - _Vector2: {r: 0, g: 0, b: 0, a: 0}

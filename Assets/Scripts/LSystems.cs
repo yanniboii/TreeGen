@@ -25,6 +25,7 @@ public class LSystems : MonoBehaviour
     [SerializeField] float _angle = 5;
     [SerializeField] int treeAmount;
     [SerializeField] bool useThiccness;
+    [SerializeField] List<int> lIndex = new List<int>();
 
     private Stack<TransformInfo> transformStack;
     [SerializeField] public List<char> letter;
@@ -121,14 +122,15 @@ public class LSystems : MonoBehaviour
                     branch.AddComponent<MeshRenderer>();
                     Vector3 growDir = treeGenerator.getRandomVectorInCone(angle, growDirection);
                     if (!firstbranch)
-                    {if(transformStack.Count() != 0)
+                    {
+                        if (transformStack.Count() != 0)
                         {
                             Vector3[] verts = transformStack.Peek().startVertices.ToArray();
                             if (verts != null)
                             {
                                 if (useThiccness)
                                 {
-                                    treeGenerator.GenerateTree(branch, transformStack.Peek().pivot, initialRotation, growDir, angle, transformStack.Peek().thiccness, verts, out growDirection, out pivot,out thiccness);
+                                    treeGenerator.GenerateTree(branch, transformStack.Peek().pivot, initialRotation, growDir, angle, transformStack.Peek().thiccness, verts, out growDirection, out pivot, out thiccness);
                                 }
                                 else
                                 {
@@ -166,7 +168,7 @@ public class LSystems : MonoBehaviour
                     pivot += lastPivot;
                     growth = pivot - lastPivot;
                     CombineInstance branchInstance = new CombineInstance();
-                    
+
                     Vector3[] vertices = branch.GetComponent<MeshFilter>().sharedMesh.vertices;
 
                     // Add vertices to the startVertices list
@@ -186,14 +188,29 @@ public class LSystems : MonoBehaviour
                     oldGameObjects.Add(branch);
                     break;
                 case 'L':
-                    if(branchIndex != recursion) { break; }
+                    bool shouldBreak = false;
+                    for (int i = 0; i < lIndex.Count; i++)
+                    {
+                        if (branchIndex != lIndex[i])
+                        {
+                            shouldBreak = true;
+                        }
+                        else if(branchIndex == lIndex[i])
+                        {
+                            shouldBreak = false;
+                        }
+                    }
+                    if(shouldBreak)
+                    {
+                        break;
+                    }
                     Vector3 initialPoss = transform.position;
                     transform.Translate(Vector3.up * ((treeGenerator.cylinderHeight * treeGenerator.floors) - treeGenerator.cylinderHeight));
                     GameObject leave = new GameObject("Leaf");
                     leave.AddComponent<MeshFilter>();
                     leave.AddComponent<MeshRenderer>();
                     MeshRenderer leafRenderer = leave.GetComponent<MeshRenderer>();
-                    
+
                     // Set the material for leaves
                     leafRenderer.sharedMaterial = pentagonalDodecahedronGenerator.material; // Replace with your leaf material
 
@@ -208,7 +225,7 @@ public class LSystems : MonoBehaviour
 
                     break;
                 case '[':
-                    branchIndex++; 
+                    branchIndex++;
                     transformStack.Push(new TransformInfo()
                     {
                         position = transform.position,
@@ -219,8 +236,8 @@ public class LSystems : MonoBehaviour
                         growth = growth,
                         startVertices = _vertices.ToList(),
                         thiccness = thiccness,
-                    }) ;
-                    
+                    });
+
 
                     break;
                 case ']':
@@ -238,11 +255,11 @@ public class LSystems : MonoBehaviour
                     break;
                 case '>':
                     //transform.Rotate(Vector3.right * Random.Range(-angle, angle));
-                    thiccness+=0.01f;
+                    thiccness += 0.01f;
                     break;
                 case '<':
                     //transform.Rotate(Vector3.left * Random.Range(-angle, angle));
-                    thiccness-=0.01f;
+                    thiccness -= 0.01f;
                     break;
                 case '+':
                     //transform.Rotate(Vector3.forward * Random.Range(-angle, angle));
@@ -263,7 +280,7 @@ public class LSystems : MonoBehaviour
                     treeGenerator.reductionRate = _reductionRate;
                     break;
                 case '.':
-                    treeGenerator.reductionRate =1;
+                    treeGenerator.reductionRate = 1;
                     break;
             }
 
