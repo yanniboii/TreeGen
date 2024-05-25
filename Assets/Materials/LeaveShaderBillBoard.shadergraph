@@ -417,7 +417,7 @@
     },
     "m_ActiveTargets": [
         {
-            "m_Id": "12572bfdcee54798a3783ee98a3cea92"
+            "m_Id": "4ab0dd332860468fb5cc7b87302180ff"
         }
     ]
 }
@@ -573,23 +573,6 @@
         "z": 0.0,
         "w": 0.0
     }
-}
-
-{
-    "m_SGVersion": 2,
-    "m_Type": "UnityEditor.Rendering.BuiltIn.ShaderGraph.BuiltInTarget",
-    "m_ObjectId": "12572bfdcee54798a3783ee98a3cea92",
-    "m_ActiveSubTarget": {
-        "m_Id": "34257c275eb04880a52463ace477305d"
-    },
-    "m_AllowMaterialOverride": false,
-    "m_SurfaceType": 0,
-    "m_ZWriteControl": 0,
-    "m_ZTestMode": 4,
-    "m_AlphaMode": 0,
-    "m_RenderFace": 2,
-    "m_AlphaClip": false,
-    "m_CustomEditorGUI": ""
 }
 
 {
@@ -1011,14 +994,6 @@
 
 {
     "m_SGVersion": 0,
-    "m_Type": "UnityEditor.Rendering.BuiltIn.ShaderGraph.BuiltInLitSubTarget",
-    "m_ObjectId": "34257c275eb04880a52463ace477305d",
-    "m_WorkflowMode": 1,
-    "m_NormalDropOffSpace": 0
-}
-
-{
-    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.MultiplyNode",
     "m_ObjectId": "39bbb9d7ab4c446d8c9e2de63358a4bb",
     "m_Group": {
@@ -1167,6 +1142,26 @@
         "z": 0.0,
         "w": 0.0
     }
+}
+
+{
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.Rendering.Universal.ShaderGraph.UniversalTarget",
+    "m_ObjectId": "4ab0dd332860468fb5cc7b87302180ff",
+    "m_ActiveSubTarget": {
+        "m_Id": "8dd3914f7cea48c583abb58da461149e"
+    },
+    "m_AllowMaterialOverride": false,
+    "m_SurfaceType": 0,
+    "m_ZTestMode": 4,
+    "m_ZWriteControl": 0,
+    "m_AlphaMode": 0,
+    "m_RenderFace": 2,
+    "m_AlphaClip": false,
+    "m_CastShadows": true,
+    "m_ReceiveShadows": true,
+    "m_CustomEditorGUI": "",
+    "m_SupportVFX": false
 }
 
 {
@@ -1736,10 +1731,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -3139.0,
-            "y": -217.0,
+            "x": -3197.0,
+            "y": -292.0,
             "width": 145.0,
-            "height": 129.00001525878907
+            "height": 129.0
         }
     },
     "m_Slots": [
@@ -1890,6 +1885,15 @@
     "m_Property": {
         "m_Id": "5b34252c95f84000806219253ecf68fc"
     }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.Rendering.Universal.ShaderGraph.UniversalLitSubTarget",
+    "m_ObjectId": "8dd3914f7cea48c583abb58da461149e",
+    "m_WorkflowMode": 1,
+    "m_NormalDropOffSpace": 0,
+    "m_ClearCoat": false
 }
 
 {

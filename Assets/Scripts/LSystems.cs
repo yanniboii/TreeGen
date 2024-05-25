@@ -26,6 +26,7 @@ public class LSystems : MonoBehaviour
     [SerializeField] int treeAmount;
     [SerializeField] bool useThiccness;
     [SerializeField] List<int> lIndex = new List<int>();
+    [SerializeField] GameObject leaveObject;
 
     private Stack<TransformInfo> transformStack;
     [SerializeField] public List<char> letter;
@@ -54,9 +55,9 @@ public class LSystems : MonoBehaviour
 
     void spawntrees()
     {
-        for (int offsetX = 0; offsetX < 750; offsetX += 50)
+        for (int offsetX = 0; offsetX < 50; offsetX += 50)
         {
-            for (int offsetY = 0; offsetY < 750; offsetY += 50)
+            for (int offsetY = 0; offsetY < 50; offsetY += 50)
             {
                 Generate(new Vector3(offsetX, 0, offsetY));
             }
@@ -202,6 +203,11 @@ public class LSystems : MonoBehaviour
                     }
                     if(shouldBreak)
                     {
+                        break;
+                    }
+                    if(leaveObject != null)
+                    {
+                        Instantiate(leaveObject, transformStack.Peek().pivot, Quaternion.identity);
                         break;
                     }
                     Vector3 initialPoss = transform.position;
