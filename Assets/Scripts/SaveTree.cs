@@ -21,8 +21,8 @@ public class SaveTree : MonoBehaviour
     public void SaveAsset()
     {
         Mesh mesh= GetComponent<MeshFilter>().sharedMesh;
-        AssetDatabase.CreateAsset(mesh, "Assets/Prefab/Trees/Tree.asset");
-        AssetDatabase.SaveAssets();
+        //AssetDatabase.CreateAsset(mesh, "Assets/Prefab/Trees/Tree.asset");
+        //AssetDatabase.SaveAssets();
         Debug.Log("yo");
     }
 }

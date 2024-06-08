@@ -53,17 +53,17 @@ public class LSystems : MonoBehaviour
         spawntrees();
     }
 
-    void spawntrees()
+    public void spawntrees()
     {
-        for (int offsetX = 0; offsetX < 50; offsetX += 50)
-        {
-            for (int offsetY = 0; offsetY < 50; offsetY += 50)
-            {
-                Generate(new Vector3(offsetX, 0, offsetY));
-            }
-
-        }
+        Generate(new Vector3(0, 0, 0));
     }
+
+    public void despawnTrees()
+    {
+        Destroy(transform.GetChild(0).gameObject);
+        Destroy(transform.GetChild(1).gameObject);
+    }
+
     void Generate(Vector3 offset)
     {
         float angle = _angle;
@@ -327,5 +327,7 @@ public class LSystems : MonoBehaviour
         leavesMeshRenderer.sharedMaterial = pentagonalDodecahedronGenerator.material; // Replace with your leaf material
         leavesMeshRenderer.material.SetFloat("_Float", randomFloat2);
         treeGenerator.reductionRate = _reductionRate;
+        tree.transform.parent = transform;
+        leavesObject.transform.parent = transform;
     }
 }
