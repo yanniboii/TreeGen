@@ -1,28 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class SaveTree : MonoBehaviour
 {
+    string path = "Assets/Prefab/Trees/Tree";
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void SaveAsset()
     {
-        Mesh mesh= GetComponent<MeshFilter>().sharedMesh;
-        //AssetDatabase.CreateAsset(mesh, "Assets/Prefab/Trees/Tree.asset");
-        //AssetDatabase.SaveAssets();
-        Debug.Log("yo");
+        Mesh mesh = transform.GetChild(0).GetComponent<MeshFilter>().sharedMesh;
+        AssetDatabase.CreateAsset(mesh, path + DateTime.Now.ToString().Replace("/", "_").Replace(":", "-") + ".asset");
+        AssetDatabase.SaveAssets();
     }
 }

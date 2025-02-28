@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class TransformInfo
@@ -92,7 +90,6 @@ public class LSystems : MonoBehaviour
             }
             currentString = stringBuilder.ToString();
         }
-        Debug.Log(currentString);
 
         // Create an array of CombineInstance with the appropriate size
         List<CombineInstance> branchCombine = new List<CombineInstance>();
@@ -196,16 +193,16 @@ public class LSystems : MonoBehaviour
                         {
                             shouldBreak = true;
                         }
-                        else if(branchIndex == lIndex[i])
+                        else if (branchIndex == lIndex[i])
                         {
                             shouldBreak = false;
                         }
                     }
-                    if(shouldBreak)
+                    if (shouldBreak)
                     {
                         break;
                     }
-                    if(leaveObject != null)
+                    if (leaveObject != null)
                     {
                         Instantiate(leaveObject, transformStack.Peek().pivot, Quaternion.identity);
                         break;
@@ -274,8 +271,6 @@ public class LSystems : MonoBehaviour
                     {
                         angle = 50;
                     }
-                    Debug.Log(angle);
-
                     break;
                 case '-':
                     //transform.Rotate(Vector3.forward * Random.Range(-angle, angle));

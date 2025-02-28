@@ -52,7 +52,7 @@ public class Boid : MonoBehaviour
 
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed);
 
-        boidPrefab.GetComponent<Rigidbody>().velocity = transform.forward * defaultSpeed;
+        boidPrefab.GetComponent<Rigidbody>().linearVelocity = transform.forward * defaultSpeed;
     }
     private void OnDrawGizmosSelected()
     {
@@ -170,7 +170,7 @@ public class Boid : MonoBehaviour
                     Boid friendBoid = friend.GetComponent<Boid>();
                     if (friendBoid != null)
                     {
-                        alignment += friendBoid.boidPrefab.GetComponent<Rigidbody>().velocity;
+                        alignment += friendBoid.boidPrefab.GetComponent<Rigidbody>().linearVelocity;
                     }
                 }
             }
