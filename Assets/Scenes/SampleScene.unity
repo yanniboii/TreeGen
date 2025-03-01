@@ -673,7 +673,7 @@ MonoBehaviour:
   _angle: 7
   treeAmount: 300
   useThiccness: 1
-  lIndex: 07000000
+  lIndex: 0400000007000000
   leaveObject: {fileID: 0}
   letter: 410046004b005000
   rule:

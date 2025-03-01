@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
 using Unity.VisualScripting;
+using UnityEditor;
+using UnityEngine;
 
 [CustomEditor(typeof(TreeGenerator))]
 public class TreeGeneratorEditor : Editor
@@ -21,17 +19,17 @@ public class TreeGeneratorEditor : Editor
     public override void OnInspectorGUI()
     {
         EditorGUILayout.BeginVertical();
-        tabIndex = GUILayout.Toolbar(tabIndex,tabs);
+        tabIndex = GUILayout.Toolbar(tabIndex, tabs);
         EditorGUILayout.EndVertical();
         switch (tabIndex)
         {
             case 0:
                 Values();
-                break; 
+                break;
             case 1:
                 LSystemRules();
-                break; 
-            default: 
+                break;
+            default:
                 break;
         }
     }
@@ -65,8 +63,8 @@ public class TreeGeneratorEditor : Editor
     {
         LSystems lSystems = target.GetComponent<LSystems>();
 
-        lSystems.axiom = EditorGUILayout.TextField("Axiom", lSystems.axiom);
-        lSystems.recursion = EditorGUILayout.IntField("Recursion", lSystems.recursion);
+        lSystems.lSystemRuleSetSO.axiom = EditorGUILayout.TextField("Axiom", lSystems.lSystemRuleSetSO.axiom);
+        lSystems.lSystemRuleSetSO.recursion = EditorGUILayout.IntField("Recursion", lSystems.lSystemRuleSetSO.recursion);
 
     }
 }

@@ -18,17 +18,11 @@ public class TransformInfo
 [System.Serializable]
 public class LSystems : MonoBehaviour
 {
-    [SerializeField] public string axiom;
-    [SerializeField] public int recursion = 1;
-    [SerializeField] float _angle = 5;
-    [SerializeField] int treeAmount;
-    [SerializeField] bool useThiccness;
-    [SerializeField] List<int> lIndex = new List<int>();
-    [SerializeField] GameObject leaveObject;
 
     private Stack<TransformInfo> transformStack;
-    [SerializeField] public List<char> letter;
-    [SerializeField] public List<string> rule;
+
+    public LSystemRuleSetSO lSystemRuleSetSO;
+
     Dictionary<char, string> rules;
     private string currentString = string.Empty;
 
@@ -38,12 +32,12 @@ public class LSystems : MonoBehaviour
     void Start()
     {
         transformStack = new Stack<TransformInfo>();
-        if (letter.Count != rule.Count)
+        if (lSystemRuleSetSO.letter.Count != lSystemRuleSetSO.rule.Count)
         {
             Debug.LogError("The 'letter' and 'rule' lists must have the same length.");
             return;
         }
-        rules = letter.Zip(rule, (l, r) => new { Letter = l, Rule = r })
+        rules = lSystemRuleSetSO.letter.Zip(lSystemRuleSetSO.rule, (l, r) => new { Letter = l, Rule = r })
             .ToDictionary(item => item.Letter, item => item.Rule);
 
         treeGenerator = FindObjectOfType<TreeGenerator>();
@@ -64,8 +58,8 @@ public class LSystems : MonoBehaviour
 
     void Generate(Vector3 offset)
     {
-        float angle = _angle;
-        currentString = axiom;
+        float angle = lSystemRuleSetSO._angle;
+        currentString = lSystemRuleSetSO.axiom;
         GameObject tree = new GameObject("tree");
         tree.transform.position = offset;
         tree.AddComponent<MeshRenderer>();
@@ -73,7 +67,7 @@ public class LSystems : MonoBehaviour
         transform.position = Vector3.zero;
         transform.rotation = new Quaternion(0, 0, 0, 0);
 
-        for (int i = 0; i < recursion; i++)
+        for (int i = 0; i < lSystemRuleSetSO.recursion; i++)
         {
             StringBuilder stringBuilder = new StringBuilder();
 
@@ -126,7 +120,7 @@ public class LSystems : MonoBehaviour
                             Vector3[] verts = transformStack.Peek().startVertices.ToArray();
                             if (verts != null)
                             {
-                                if (useThiccness)
+                                if (lSystemRuleSetSO.useThiccness)
                                 {
                                     treeGenerator.GenerateTree(branch, transformStack.Peek().pivot, initialRotation, growDir, angle, transformStack.Peek().thiccness, verts, out growDirection, out pivot, out thiccness);
                                 }
@@ -140,7 +134,7 @@ public class LSystems : MonoBehaviour
                         {
                             Vector3[] verts = _vertices;
 
-                            if (useThiccness)
+                            if (lSystemRuleSetSO.useThiccness)
                             {
                                 treeGenerator.GenerateTree(branch, pivot, initialRotation, growDir, angle, thiccness, verts, out growDirection, out pivot, out thiccness);
                             }
@@ -153,7 +147,7 @@ public class LSystems : MonoBehaviour
                     }
                     else
                     {
-                        if (useThiccness)
+                        if (lSystemRuleSetSO.useThiccness)
                         {
                             treeGenerator.GenerateTree(branch, initialPos, initialRotation, growDir, angle, out growDirection, out pivot, out thiccness);
                         }
@@ -187,13 +181,13 @@ public class LSystems : MonoBehaviour
                     break;
                 case 'L':
                     bool shouldBreak = false;
-                    for (int i = 0; i < lIndex.Count; i++)
+                    for (int i = 0; i < lSystemRuleSetSO.lIndex.Count; i++)
                     {
-                        if (branchIndex != lIndex[i])
+                        if (branchIndex != lSystemRuleSetSO.lIndex[i])
                         {
                             shouldBreak = true;
                         }
-                        else if (branchIndex == lIndex[i])
+                        else if (branchIndex == lSystemRuleSetSO.lIndex[i])
                         {
                             shouldBreak = false;
                         }
@@ -202,11 +196,7 @@ public class LSystems : MonoBehaviour
                     {
                         break;
                     }
-                    if (leaveObject != null)
-                    {
-                        Instantiate(leaveObject, transformStack.Peek().pivot, Quaternion.identity);
-                        break;
-                    }
+
                     Vector3 initialPoss = transform.position;
                     transform.Translate(Vector3.up * ((treeGenerator.cylinderHeight * treeGenerator.floors) - treeGenerator.cylinderHeight));
                     GameObject leave = new GameObject("Leaf");
